@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app_bloc/data/data_sources/api.dart';
+
+import 'domain/models/location.dart';
 
 void main() {
   runApp(const MyApp());
@@ -58,6 +61,13 @@ class _MyHomePageState extends State<MyHomePage> {
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
       _counter++;
+      
+      OpenMeteoGeocodingApi geocodingApi = OpenMeteoGeocodingApi();
+      geocodingApi.getCityLocation('Warsaw').then((value) => print('${value.latitude} ${value.longitude}'));
+      
+      OpenMeteoWeatherForecastApi weatherForecastApi = OpenMeteoWeatherForecastApi();
+      weatherForecastApi.getWeeklyForecast(52.23, 21.01).then((value) => print('${value.first.date} ${value.first.weatherCode} ${value.first.minTemperature} ${value.first.maxTemperature}'));
+
     });
   }
 
