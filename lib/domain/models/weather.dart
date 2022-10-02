@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class Weather {
   String date;
   double weatherCode;
@@ -12,6 +10,39 @@ class Weather {
     required this.minTemperature,
     required this.maxTemperature,
   });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+  
+    return other is Weather &&
+      other.date == date &&
+      other.weatherCode == weatherCode &&
+      other.minTemperature == minTemperature &&
+      other.maxTemperature == maxTemperature;
+  }
+
+  @override
+  int get hashCode {
+    return date.hashCode ^
+      weatherCode.hashCode ^
+      minTemperature.hashCode ^
+      maxTemperature.hashCode;
+  }
+
+  Weather copyWith({
+    String? date,
+    double? weatherCode,
+    double? minTemperature,
+    double? maxTemperature,
+  }) {
+    return Weather(
+      date: date ?? this.date,
+      weatherCode: weatherCode ?? this.weatherCode,
+      minTemperature: minTemperature ?? this.minTemperature,
+      maxTemperature: maxTemperature ?? this.maxTemperature,
+    );
+  }
 }
 
 class DailyWeather {
