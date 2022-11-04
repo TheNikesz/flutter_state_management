@@ -5,23 +5,23 @@ import 'package:weather_app_bloc/domain/models/weather.dart';
 class GeocodingException implements Exception {}
 
 class OpenMeteoGeocodingApi {
-  static const _baseUrl = 'http://geocoding-api.open-meteo.com/v1/search';
+  static const _baseUrl = 'https://geocoding-api.open-meteo.com/v1/search';
 
   Future<Location> getCityLocation(String cityName) async {
-    var response = await Dio().get(_baseUrl, queryParameters: {'name' : cityName});
+    var response = await Dio().get(_baseUrl, queryParameters: {'name' : cityName, 'count' : 1});
 
     if (response.statusCode != 200) {
       throw GeocodingException();
     }
 
-    return AllLocations.fromJson(response.data).locations.first;
+    return Location.fromJson(response.data['results'][0]);
   }
 }
 
 class WeatherForecastException implements Exception {}
 
 class OpenMeteoWeatherForecastApi {  
-  static const _baseUrl = 'http://api.open-meteo.com/v1/forecast';
+  static const _baseUrl = 'https://api.open-meteo.com/v1/forecast';
 
   Future<List<Weather>> getWeeklyForecast(double latitude, double longitude) async {
     var response = await Dio().get(_baseUrl, queryParameters: {'latitude' : latitude, 'longitude' : longitude, 'daily' : ['weathercode', 'temperature_2m_max', 'temperature_2m_min'], 'timezone' : 'auto'});
@@ -29,6 +29,8 @@ class OpenMeteoWeatherForecastApi {
     if (response.statusCode != 200) {
       throw WeatherForecastException();
     }
+
+    print(response.data);
     
     final dailyWeather = WeeklyWeather.fromJson(response.data).dailyWeather;
     List<Weather> weather = [];

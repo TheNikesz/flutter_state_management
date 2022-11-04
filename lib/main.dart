@@ -1,26 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:weather_app_bloc/data/data_sources/api.dart';
-import 'package:weather_app_bloc/data/repositories/weather_repository.dart';
 import 'package:weather_app_bloc/presentation/pages/weather_page.dart';
 
-import 'domain/models/location.dart';
+import 'data/repositories/weather_repository.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const WeatherApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class WeatherApp extends StatelessWidget {
+  const WeatherApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        textTheme: GoogleFonts.montserratTextTheme(), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.red),
+    return RepositoryProvider(
+      create: (context) => WeatherRepository(),
+      child: MaterialApp(
+        title: 'Weather App (Bloc)',
+        theme: ThemeData(
+          textTheme: GoogleFonts.montserratTextTheme(),
+          scaffoldBackgroundColor: Colors.white, 
+          colorScheme: ColorScheme.fromSwatch().copyWith(primary: Colors.black),
+        ),
+        home: WeatherPage(),
       ),
-      home: const WeatherPage(),
     );
   }
 }

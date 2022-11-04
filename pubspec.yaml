@@ -33,8 +33,10 @@ dependencies:
   dio: ^4.0.6
   flutter:
     sdk: flutter
+  flutter_bloc: ^8.1.1
   google_fonts: ^3.0.1
   hydrated_bloc: ^8.1.0
+  intl: ^0.17.0
   weather_icons: ^3.0.0
 
 dev_dependencies:

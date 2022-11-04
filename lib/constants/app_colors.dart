@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 class AppColors {
-  static const dayLightGray = Color(0xFFEDEDED);
-  static const dayDarkGray = Color(0xFFF6F6F6);
+  static const dayLightGray = Color(0xFFF6F6F6);
+  static const dayDarkGray = Color(0xFFEDEDED);
   static const dayLightYellow = Color(0xFFFFF5B5);
   static const nightLightGray = Color(0xFFA3B4D1);
   static const nightLightBlue = Color(0xFF7C97C7);

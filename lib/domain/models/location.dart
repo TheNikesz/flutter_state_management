@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class Location {
   String name;
   double latitude;
@@ -19,20 +17,5 @@ class Location {
     );
   }
 
-  factory Location.fromJson(String source) => Location.fromMap(json.decode(source));
-}
-
-class AllLocations {
-  List<Location> locations;
-  AllLocations({
-    required this.locations,
-  });
-
-  factory AllLocations.fromMap(Map<String, dynamic> map) {
-    return AllLocations(
-      locations: List<Location>.from(map['results']?.map((x) => Location.fromMap(x))),
-    );
-  }
-
-  factory AllLocations.fromJson(Map<String, dynamic> source) => AllLocations.fromMap(source);
+  factory Location.fromJson(Map<String, dynamic> source) => Location.fromMap(source);
 }
