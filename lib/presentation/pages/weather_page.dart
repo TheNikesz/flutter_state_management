@@ -6,6 +6,8 @@ import 'package:weather_app_bloc/data/repositories/weather_repository.dart';
 import 'package:weather_app_bloc/presentation/cubits/weather_cubit.dart';
 import 'package:weather_icons/weather_icons.dart';
 
+import '../../domain/models/weather.dart';
+
 class WeatherPage extends StatelessWidget {
   final _citySearchController = TextEditingController(text: 'Warsaw');
 
@@ -25,6 +27,7 @@ class WeatherPage extends StatelessWidget {
           }
 
           return Scaffold(
+            backgroundColor: state is WeatherSuccess && state.isNight == true ? AppColors.nightDarkBlue : Colors.white,
             resizeToAvoidBottomInset: false,
             body: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -32,14 +35,16 @@ class WeatherPage extends StatelessWidget {
               children: [
                 if (state is WeatherSuccess) ...[
                   const Spacer(),
-                  _buildCitySearch(),
+                  _buildCitySearch(context, state.isNight),
                   const Spacer(),
-                  _buildCityAndDate(),
+                  _buildCityAndDate(state.weeklyWeather, state.isNight),
                   const Spacer(),
-                  _buildMainWeather(),
+                  _buildMainWeather(state.weeklyWeather, state.isNight),
+                  const Spacer(),
+                  _buildWeatherSwitch(context, state.isNight),
                   const Spacer(),
                   // _buildDailyWeather(),
-                  _buildWeeklyWeather(),
+                  _buildWeeklyWeather(state.weeklyWeather, state.isNight),
                   const Spacer(),
                 ] else const Center(child: CircularProgressIndicator()),
               ],
@@ -50,7 +55,7 @@ class WeatherPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCitySearch() {
+  Widget _buildCitySearch(BuildContext context, bool isNight) {
     return Padding(
       padding: const EdgeInsets.only(left: 40.0, right: 40.0, top: 20.0),
       child: Row(
@@ -61,64 +66,76 @@ class WeatherPage extends StatelessWidget {
               height: 50,
               child: TextField(
                 controller: _citySearchController,
+                style: TextStyle(
+                  color: isNight ? AppColors.nightText : AppColors.dayText,
+                ),
                 textAlign: TextAlign.left,
-                cursorColor: AppColors.dayText,
+                cursorColor: isNight ? AppColors.nightText : AppColors.dayText,
                 decoration: InputDecoration(
                   hintText: 'Enter a city name',
                   suffixIcon: IconButton(
-                    icon: const Icon(Icons.clear),
+                    icon: Icon(
+                      Icons.clear,
+                      color: isNight ? AppColors.nightText : AppColors.dayText,
+                    ),
                     onPressed: _citySearchController.clear,
                     splashColor: Colors.transparent,
                     hoverColor: Colors.transparent,
                   ),
                   hoverColor: Colors.transparent,
                   contentPadding: const EdgeInsets.only(left: 15, top: 15, bottom: 15),
-                  fillColor: Colors.white,
+                  fillColor: isNight ? AppColors.nightDarkBlue : Colors.white,
                   filled: true,
-                  enabledBorder: const OutlineInputBorder(
-                    borderRadius: BorderRadius.only(
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10)),
                     borderSide:
-                        BorderSide(color: AppColors.dayDarkGray, width: 2.0),
+                        BorderSide(
+                          color: isNight ? AppColors.nightLightBlue : AppColors.dayDarkGray,
+                          width: 2.0,
+                        ),
                   ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderRadius: BorderRadius.only(
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10)),
                     borderSide:
-                        BorderSide(color: AppColors.dayLightGray, width: 2.0),
+                        BorderSide(
+                          color: isNight ? AppColors.nightLightBlue : AppColors.dayDarkGray,
+                          width: 2.0
+                        ),
                   ),
                 ),
                 // onSubmitted: (value) => null
               ),
             ),
           ),
-          BlocBuilder<WeatherCubit, WeatherState>(
-            builder: (context, state) {
-              return InkWell(
-                hoverColor: Colors.transparent,
-                child: Container(
-                  height: 50,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    color: AppColors.dayLightGray,
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(10),
-                      bottomRight: Radius.circular(10),
-                    ),
-                  ),
-                  child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 15.0),
-                      child: Icon(Icons.search)),
+          InkWell(
+            hoverColor: Colors.transparent,
+            child: Container(
+              height: 49,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: isNight ? AppColors.nightLightBlue : AppColors.dayLightGray,
+                borderRadius: const BorderRadius.only(
+                  topRight: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
                 ),
-                onTap: () {
-                  final weatherCubit = BlocProvider.of<WeatherCubit>(context);
-                  weatherCubit.getWeeklyForecast(_citySearchController.text);
-                  // final snackBar = SnackBar(content: Text(state.toString()));
-                  // ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                },
-              );
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                child: Icon(
+                  Icons.search,
+                  color: isNight ? AppColors.nightText : AppColors.dayText,
+                )
+              ),
+            ),
+            onTap: () {
+              final weatherCubit = BlocProvider.of<WeatherCubit>(context);
+              weatherCubit.getWeeklyForecast(_citySearchController.text);
+              // final snackBar = SnackBar(content: Text(state.toString()));
+              // ScaffoldMessenger.of(context).showSnackBar(snackBar);
             },
           )
         ],
@@ -126,122 +143,165 @@ class WeatherPage extends StatelessWidget {
     );
   }
 
-  Widget _buildCityAndDate() {
-    return BlocBuilder<WeatherCubit, WeatherState>(
-      builder: (context, state) {
-        return Center(
-          child: Column(
-            children: [
-              if (state is WeatherSuccess) ...[
-                Text(toBeginningOfSentenceCase(_citySearchController.text)!,
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 40)),
-                Text(DateFormat('EEE dd/MM/yy')
-                    .format(DateTime.parse(state.weeklyWeather.first.date))),
-              ]
-            ],
+  Widget _buildCityAndDate(List<Weather> weeklyWeather, bool isNight) {
+    return Center(
+      child: Column(
+        children: [
+          Text(toBeginningOfSentenceCase(_citySearchController.text)!,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, fontSize: 40,
+                  color: isNight ? AppColors.nightText : AppColors.dayText,
+              )
+            ),
+          Text(
+            DateFormat('EEE dd/MM/yy').format(DateTime.parse(weeklyWeather.first.date)),
+            style: TextStyle(
+              color: isNight ? AppColors.nightText : AppColors.dayText,
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
-  Widget _buildMainWeather() {
-    return BlocBuilder<WeatherCubit, WeatherState>(
-      builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 50.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Column(children: [
-                if (state is WeatherSuccess) ...[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: BoxedIcon(
-                      getWeatherIcon(state.weeklyWeather.first.weatherCode.toInt()),
-                      size: 80.0,
-                    ),
-                  ),
-                  Text(getWeatherLabel(state.weeklyWeather.first.weatherCode.toInt()),
-                      style: const TextStyle(fontSize: 15)),
-                ],
-              ]),
-              const SizedBox(
-                height: 150,
-                child: VerticalDivider(
-                  color: AppColors.dayDarkGray,
-                  thickness: 2,
-                ),
-              ),
-              if (state is WeatherSuccess)
+  Widget _buildMainWeather(List<Weather> weeklyWeather, bool isNight) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Column(
+              children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 9.0),
-                  child: Text(
-                      '${state.weeklyWeather.first.maxTemperature.toStringAsPrecision(2)}°',
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 90)),
+                  padding: const EdgeInsets.all(8.0),
+                  child: BoxedIcon(
+                    getWeatherIcon(weeklyWeather.first.weatherCode.toInt(), isNight),
+                    color: isNight ? Colors.white : Colors.black,
+                    size: 80.0,
+                  ),
                 ),
-            ],
+                Text(
+                  getWeatherLabel(weeklyWeather.first.weatherCode.toInt()),
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: isNight ? AppColors.nightText : AppColors.dayText,
+                  ),
+                ),
+              ]
+            ),
           ),
-        );
-      },
-    );
-  }
-
-  Widget _buildDailyWeather(int index) {
-    return BlocBuilder<WeatherCubit, WeatherState>(
-      builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 50.0),
-          child: SizedBox(
-            height: 60,
-            child: DecoratedBox(
-              decoration: const BoxDecoration(
-                color: AppColors.dayLightGray,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  left: 20,
-                  right: 20,
-                ),
-                child: Stack(
-                  children: [
-                    if (state is WeatherSuccess) ...[
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(DateFormat('EEEE').format(DateTime.parse(
-                            state.weeklyWeather.elementAt(index).date))),
-                      ),
-                      Center(
-                        child: BoxedIcon(
-                          getWeatherIcon(
-                              state.weeklyWeather.elementAt(index).weatherCode.toInt()
-                            ),
-                          size: 20.0,
-                        ),
-                      ),
-                      Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                              '${state.weeklyWeather.elementAt(index).maxTemperature.toStringAsPrecision(2)}°'))
-                    ]
-                  ],
-                ),
+          Center(
+            child: SizedBox(
+              height: 150,
+              child: VerticalDivider(
+                color: isNight ? AppColors.nightLightBlue : AppColors.dayDarkGray,
+                thickness: 3,
               ),
             ),
           ),
-        );
-      },
+          Align(
+            alignment: Alignment.centerRight,
+            child: Text(
+              isNight ? '${weeklyWeather.first.minTemperature.toStringAsFixed(0)}°' : '${weeklyWeather.first.maxTemperature.toStringAsFixed(0)}°',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 90,
+                  color: isNight ? AppColors.nightText : AppColors.dayText,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildWeeklyWeather() {
+  Widget _buildWeatherSwitch(BuildContext context, bool isNight) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        BoxedIcon(
+          WeatherIcons.day_sunny,
+          color: isNight ? Colors.white : Colors.black,
+        ),
+        Switch(
+          hoverColor: Colors.transparent,
+          activeColor: AppColors.dayDarkGray,
+          activeTrackColor: AppColors.dayLightGray,
+          inactiveThumbColor: Colors.black,
+          inactiveTrackColor: Colors.black87,
+          value: isNight,
+          onChanged: (value) {
+            final weatherCubit = BlocProvider.of<WeatherCubit>(context);
+            weatherCubit.changeWeatherSwitchValue(value);
+          },
+        ),
+        BoxedIcon(
+          WeatherIcons.night_clear,
+          color: isNight ? Colors.white : Colors.black,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDailyWeather(List<Weather> weeklyWeather, bool isNight, int index) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 50.0),
+      child: SizedBox(
+        height: 60,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: isNight ? AppColors.nightLightBlue : AppColors.dayLightGray,
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: 20,
+              right: 20,
+            ),
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    DateFormat('EEEE').format(DateTime.parse(weeklyWeather.elementAt(index).date)),
+                    style: TextStyle(
+                      color: isNight ? AppColors.nightText : AppColors.dayText,
+                    ),
+                  ),
+                ),
+                Center(
+                  child: BoxedIcon(
+                    getWeatherIcon(
+                      weeklyWeather.elementAt(index).weatherCode.toInt(), isNight
+                    ),
+                    size: 20.0,
+                    color: isNight ? Colors.white : Colors.black,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    isNight ? '${weeklyWeather.elementAt(index).minTemperature.toStringAsFixed(0)}°' : '${weeklyWeather.elementAt(index).maxTemperature.toStringAsFixed(0)}°',
+                    style: TextStyle(
+                      color: isNight ? AppColors.nightText : AppColors.dayText,
+                    ),
+                  )
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWeeklyWeather(List<Weather> weeklyWeather, bool isNight) {
     List<Widget> dailyWeatherWidgets = [];
     for (var i = 1; i < 7; i++) {
       dailyWeatherWidgets.add(
-        _buildDailyWeather(i),
+        _buildDailyWeather(weeklyWeather, isNight, i),
       );
     }
 
@@ -251,7 +311,52 @@ class WeatherPage extends StatelessWidget {
     );
   }
 
-  IconData getWeatherIcon(int weatherCode) {
+  IconData getWeatherIcon(int weatherCode, bool isNight) {
+    if (isNight) {
+      switch (weatherCode) {
+        case 0:
+          return WeatherIcons.night_clear;
+        case 1:
+        case 2:
+        case 3:
+          return WeatherIcons.night_alt_cloudy;
+        case 45:
+        case 48:
+          return WeatherIcons.night_fog;
+        case 51:
+        case 53:
+        case 55:
+        case 80:
+        case 81:
+        case 82:
+          return WeatherIcons.night_alt_showers;
+        case 56:
+        case 57:
+          return WeatherIcons.night_alt_rain_mix;
+        case 61:
+        case 63:
+        case 65:
+          return WeatherIcons.night_alt_rain;
+        case 66:
+        case 67:
+          return WeatherIcons.night_alt_sleet;
+        case 71:
+        case 73:
+        case 75:
+        case 77:
+        case 85:
+        case 86:
+          return WeatherIcons.night_alt_snow;
+        case 95:
+          return WeatherIcons.night_alt_thunderstorm;
+        case 96:
+        case 99:
+          return WeatherIcons.night_alt_snow_thunderstorm;
+        default:
+          return WeatherIcons.na;
+      }
+    }
+
     switch (weatherCode) {
       case 0:
         return WeatherIcons.day_sunny;
@@ -358,8 +463,4 @@ class WeatherPage extends StatelessWidget {
         return 'NA';
     }
   }
-
-  // Widget _buildDayNightSwitch() {
-  //   return SwitchListTile(value: value, onChanged: onChanged)
-  // }
 }

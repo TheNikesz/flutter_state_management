@@ -15,19 +15,31 @@ class WeatherLoading extends WeatherState {
 
 class WeatherSuccess extends WeatherState {
   final List<Weather> weeklyWeather;
+  late bool isNight;
 
-  const WeatherSuccess(this.weeklyWeather);
+  WeatherSuccess({required this.weeklyWeather, this.isNight = false});
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
   
     return other is WeatherSuccess &&
-      listEquals(other.weeklyWeather, weeklyWeather);
+      listEquals(other.weeklyWeather, weeklyWeather) &&
+      other.isNight == isNight;
   }
 
   @override
-  int get hashCode => weeklyWeather.hashCode;
+  int get hashCode => weeklyWeather.hashCode ^ isNight.hashCode;
+
+  WeatherSuccess copyWith({
+    List<Weather>? weeklyWeather,
+    bool? isNight,
+  }) {
+    return WeatherSuccess(
+      weeklyWeather: weeklyWeather ?? this.weeklyWeather,
+      isNight: isNight ?? this.isNight,
+    );
+  }
 }
 
 class WeatherFailure extends WeatherState {

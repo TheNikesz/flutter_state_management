@@ -16,11 +16,21 @@ class WeatherCubit extends Cubit<WeatherState> {
     try {
       emit(const WeatherLoading());
       final weeklyWeather = await weatherRepository.getWeeklyForecast(cityName);
-      emit(WeatherSuccess(weeklyWeather));
+      emit(WeatherSuccess(
+        weeklyWeather: weeklyWeather
+      ));
     } on GeocodingException {
       emit(const WeatherFailure('Error! Couldn\'t fetch the location of that city.'));
     } on WeatherForecastException {
       emit(const WeatherFailure('Error! Couldn\'t fetch the weather for that city.'));
+    }
+  }
+
+  void changeWeatherSwitchValue(bool value) {
+    if (state is WeatherSuccess) {
+      emit((state as WeatherSuccess).copyWith(
+        isNight: value,
+      ));
     }
   }
 }
