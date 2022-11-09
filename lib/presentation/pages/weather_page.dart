@@ -1,5 +1,7 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:graphic/graphic.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_app_bloc/constants/app_colors.dart';
 import 'package:weather_app_bloc/data/repositories/weather_repository.dart';
@@ -41,10 +43,35 @@ class WeatherPage extends StatelessWidget {
                   const Spacer(),
                   _buildMainWeather(state.weeklyWeather, state.isNight),
                   const Spacer(),
-                  _buildWeatherSwitch(context, state.isNight),
+                  _buildSwitches(context, state.isChart, state.isNight),
                   const Spacer(),
-                  // _buildDailyWeather(),
-                  _buildWeeklyWeather(state.weeklyWeather, state.isNight),
+                  if (state.isChart == true) ...[
+                    _buildWeatherChart(state.weeklyWeather, state.isNight),
+                  ] else _buildWeeklyWeather(state.weeklyWeather, state.isNight),
+                  const Spacer(),
+                ] else if (state is WeatherFailure) ...[
+                  const Spacer(),
+                  const Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Icon(
+                      Icons.fmd_bad_outlined,
+                      size: 50.0,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0, bottom: 2.0),
+                    child: Text(
+                      state.errorMessage,
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                  const Text(
+                    'Please enter a new city name and try again.',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  _buildCitySearch(context, false),
                   const Spacer(),
                 ] else const Center(child: CircularProgressIndicator()),
               ],
@@ -57,13 +84,13 @@ class WeatherPage extends StatelessWidget {
 
   Widget _buildCitySearch(BuildContext context, bool isNight) {
     return Padding(
-      padding: const EdgeInsets.only(left: 40.0, right: 40.0, top: 20.0),
+      padding: const EdgeInsets.only(top: 20.0, left: 40.0, right: 40.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
             child: SizedBox(
-              height: 50,
+              height: 48,
               child: TextField(
                 controller: _citySearchController,
                 style: TextStyle(
@@ -73,6 +100,9 @@ class WeatherPage extends StatelessWidget {
                 cursorColor: isNight ? AppColors.nightText : AppColors.dayText,
                 decoration: InputDecoration(
                   hintText: 'Enter a city name',
+                  hintStyle: TextStyle(
+                    color: isNight ? AppColors.nightText : AppColors.dayText,
+                  ),
                   suffixIcon: IconButton(
                     icon: Icon(
                       Icons.clear,
@@ -92,7 +122,7 @@ class WeatherPage extends StatelessWidget {
                         bottomLeft: Radius.circular(10)),
                     borderSide:
                         BorderSide(
-                          color: isNight ? AppColors.nightLightBlue : AppColors.dayDarkGray,
+                          color: isNight ? AppColors.nightLightGray : AppColors.dayDarkGray,
                           width: 2.0,
                         ),
                   ),
@@ -102,22 +132,25 @@ class WeatherPage extends StatelessWidget {
                         bottomLeft: Radius.circular(10)),
                     borderSide:
                         BorderSide(
-                          color: isNight ? AppColors.nightLightBlue : AppColors.dayDarkGray,
+                          color: isNight ? AppColors.nightLightGray : AppColors.dayDarkGray,
                           width: 2.0
                         ),
                   ),
                 ),
-                // onSubmitted: (value) => null
               ),
             ),
           ),
           InkWell(
             hoverColor: Colors.transparent,
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(10),
+              bottomRight: Radius.circular(10),
+            ),
             child: Container(
-              height: 49,
+              height: 50,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: isNight ? AppColors.nightLightBlue : AppColors.dayLightGray,
+                color: isNight ? AppColors.nightLightGray : AppColors.dayLightGray,
                 borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(10),
                   bottomRight: Radius.circular(10),
@@ -134,8 +167,6 @@ class WeatherPage extends StatelessWidget {
             onTap: () {
               final weatherCubit = BlocProvider.of<WeatherCubit>(context);
               weatherCubit.getWeeklyForecast(_citySearchController.text);
-              // final snackBar = SnackBar(content: Text(state.toString()));
-              // ScaffoldMessenger.of(context).showSnackBar(snackBar);
             },
           )
         ],
@@ -167,53 +198,84 @@ class WeatherPage extends StatelessWidget {
   Widget _buildMainWeather(List<Weather> weeklyWeather, bool isNight) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50.0),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: BoxedIcon(
-                    getWeatherIcon(weeklyWeather.first.weatherCode.toInt(), isNight),
-                    color: isNight ? Colors.white : Colors.black,
-                    size: 80.0,
+      child: SizedBox(
+        width: 350.0,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: BoxedIcon(
+                      _getWeatherIcon(weeklyWeather.first.weatherCode.toInt(), isNight),
+                      color: isNight ? Colors.white : Colors.black,
+                      size: 80.0,
+                    ),
                   ),
+                  Text(
+                    _getWeatherLabel(weeklyWeather.first.weatherCode.toInt()),
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: isNight ? AppColors.nightText : AppColors.dayText,
+                    ),
+                  ),
+                ]
+              ),
+            ),
+            Center(
+              child: SizedBox(
+                height: 150,
+                child: VerticalDivider(
+                  color: isNight ? AppColors.nightLightGray : AppColors.dayDarkGray,
+                  thickness: 3,
                 ),
-                Text(
-                  getWeatherLabel(weeklyWeather.first.weatherCode.toInt()),
-                  style: TextStyle(
-                    fontSize: 15,
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                isNight ? '${weeklyWeather.first.minTemperature.toStringAsFixed(0)}°' : '${weeklyWeather.first.maxTemperature.toStringAsFixed(0)}°',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 90,
                     color: isNight ? AppColors.nightText : AppColors.dayText,
-                  ),
                 ),
-              ]
-            ),
-          ),
-          Center(
-            child: SizedBox(
-              height: 150,
-              child: VerticalDivider(
-                color: isNight ? AppColors.nightLightBlue : AppColors.dayDarkGray,
-                thickness: 3,
               ),
             ),
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Text(
-              isNight ? '${weeklyWeather.first.minTemperature.toStringAsFixed(0)}°' : '${weeklyWeather.first.maxTemperature.toStringAsFixed(0)}°',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 90,
-                  color: isNight ? AppColors.nightText : AppColors.dayText,
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildChartSwitch(BuildContext context, bool isNight, bool isGraph) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.reorder,
+          color: isNight ? Colors.white : Colors.black,
+        ),
+        Switch(
+          hoverColor: Colors.transparent,
+          activeColor: isNight ? AppColors.dayDarkGray : Colors.black,
+          activeTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
+          inactiveThumbColor: isNight ? AppColors.dayDarkGray : Colors.black,
+          inactiveTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
+          value: isGraph,
+          onChanged: (value) {
+            final weatherCubit = BlocProvider.of<WeatherCubit>(context);
+            weatherCubit.changeGraphSwitchValue(value);
+          },
+        ),
+        Icon(
+          Icons.show_chart,
+          color: isNight ? Colors.white : Colors.black,
+        ),
+      ],
     );
   }
 
@@ -245,6 +307,19 @@ class WeatherPage extends StatelessWidget {
     );
   }
 
+  Widget _buildSwitches(BuildContext context, bool isChart, bool isNight) {
+    return SizedBox(
+      width: 400,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildChartSwitch(context, isNight, isChart),
+          _buildWeatherSwitch(context, isNight)
+        ],
+      ),
+    );
+  }
+
   Widget _buildDailyWeather(List<Weather> weeklyWeather, bool isNight, int index) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 50.0),
@@ -273,7 +348,7 @@ class WeatherPage extends StatelessWidget {
                 ),
                 Center(
                   child: BoxedIcon(
-                    getWeatherIcon(
+                    _getWeatherIcon(
                       weeklyWeather.elementAt(index).weatherCode.toInt(), isNight
                     ),
                     size: 20.0,
@@ -311,7 +386,133 @@ class WeatherPage extends StatelessWidget {
     );
   }
 
-  IconData getWeatherIcon(int weatherCode, bool isNight) {
+  Widget _buildWeatherChart(List<Weather> weeklyWeather, bool isNight) {
+    List<double> maxTemperatures = [];
+    List<double> minTemperatures = [];
+    List<String> dates = [];
+
+    for (var i = 0; i < weeklyWeather.length; i++) {
+      maxTemperatures.add(weeklyWeather.elementAt(i).maxTemperature);
+      minTemperatures.add(weeklyWeather.elementAt(i).minTemperature);
+      dates.add(DateFormat('dd/MM').format(DateTime.parse(weeklyWeather.elementAt(i).date)));
+    }
+
+    var max = maxTemperatures.reduce((curr, next) => curr > next? curr: next) + 1;
+    var min = minTemperatures.reduce((curr, next) => curr < next? curr: next) - 1;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 50.0),
+      child: SizedBox(
+        height: 400,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: isNight ? AppColors.nightLightBlue : AppColors.dayLightGray,
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, right: 10.0),
+            child: Chart(
+              data: isNight ? _getData(dates, minTemperatures, true) : _getData(dates, maxTemperatures, false),
+              variables: _getVariables(isNight, max, min),
+              elements: [LineElement(
+                color: ColorAttr(
+                  value: isNight ? AppColors.nightText : AppColors.dayText,
+                ),
+              )],
+              axes: [
+                Defaults.horizontalAxis
+                ..grid = StrokeStyle(
+                      color: isNight ? AppColors.nightLightGray : AppColors.dayDarkGray,
+                    )
+                  ..line = null
+                  ..label = LabelStyle(
+                    offset: const Offset(0, 10),
+                    align: Alignment.bottomCenter,
+                    style: TextStyle(
+                      color: isNight ? AppColors.nightText : AppColors.dayText,
+                      fontSize: 11.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                Defaults.verticalAxis
+                  ..grid = StrokeStyle(
+                      color: isNight ? AppColors.nightLightGray : AppColors.dayDarkGray,
+                    )
+                  ..line = null
+                  ..label = LabelStyle(
+                    offset: const Offset(-10, 0),
+                    align: Alignment.centerLeft,
+                    style: TextStyle(
+                      color: isNight ? AppColors.nightText : AppColors.dayText,
+                      fontSize: 11.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Map<dynamic, dynamic>> _getData(List<String> dates, List<double> temperatures, bool isNight) {
+    if (isNight) {
+      return [
+        { 'night': dates.elementAt(0), 'minTemperature': temperatures.elementAt(0) },
+        { 'night': dates.elementAt(1), 'minTemperature': temperatures.elementAt(1) },
+        { 'night': dates.elementAt(2), 'minTemperature': temperatures.elementAt(2) },
+        { 'night': dates.elementAt(3), 'minTemperature': temperatures.elementAt(3) },
+        { 'night': dates.elementAt(4), 'minTemperature': temperatures.elementAt(4) },
+        { 'night': dates.elementAt(5), 'minTemperature': temperatures.elementAt(5) },
+        { 'night': dates.elementAt(6), 'minTemperature': temperatures.elementAt(6) },
+      ];
+    } else {
+      return [
+        { 'day': dates.elementAt(0), 'maxTemperature': temperatures.elementAt(0) },
+        { 'day': dates.elementAt(1), 'maxTemperature': temperatures.elementAt(1) },
+        { 'day': dates.elementAt(2), 'maxTemperature': temperatures.elementAt(2) },
+        { 'day': dates.elementAt(3), 'maxTemperature': temperatures.elementAt(3) },
+        { 'day': dates.elementAt(4), 'maxTemperature': temperatures.elementAt(4) },
+        { 'day': dates.elementAt(5), 'maxTemperature': temperatures.elementAt(5) },
+        { 'day': dates.elementAt(6), 'maxTemperature': temperatures.elementAt(6) },
+      ];
+    }
+  }
+
+  Map<String, Variable<Map<dynamic, dynamic>, dynamic>> _getVariables(bool isNight, double max, double min,) {
+    if (isNight) {
+      return {
+        'night': Variable(
+          accessor: (Map map) => map['night'] as String,
+        ),
+        'minTemperature': Variable(
+          accessor: (Map map) => map['minTemperature'] as double,
+          scale: LinearScale(
+            min: min,
+            max: max,
+            formatter: (value) => value.toStringAsFixed(0)
+          ),
+        ),
+      };
+    } else {
+      return {
+        'day': Variable(
+          accessor: (Map map) => map['day'] as String,
+        ),
+        'maxTemperature': Variable(
+          accessor: (Map map) => map['maxTemperature'] as double,
+          scale: LinearScale(
+            min: min,
+            max: max,
+            formatter: (value) => value.toStringAsFixed(0)
+          ),
+        ),
+      };
+    }
+  }
+
+  IconData _getWeatherIcon(int weatherCode, bool isNight) {
     if (isNight) {
       switch (weatherCode) {
         case 0:
@@ -401,7 +602,7 @@ class WeatherPage extends StatelessWidget {
     }
   }
 
-  String getWeatherLabel(int weatherCode) {
+  String _getWeatherLabel(int weatherCode) {
     switch (weatherCode) {
       case 0:
         return 'Clear sky';

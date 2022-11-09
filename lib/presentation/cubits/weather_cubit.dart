@@ -26,6 +26,14 @@ class WeatherCubit extends Cubit<WeatherState> {
     }
   }
 
+  void changeGraphSwitchValue(bool value) {
+    if (state is WeatherSuccess) {
+      emit((state as WeatherSuccess).copyWith(
+        isChart: value,
+      ));
+    }
+  }
+
   void changeWeatherSwitchValue(bool value) {
     if (state is WeatherSuccess) {
       emit((state as WeatherSuccess).copyWith(

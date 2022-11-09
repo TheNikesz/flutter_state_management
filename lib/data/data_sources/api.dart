@@ -10,7 +10,9 @@ class OpenMeteoGeocodingApi {
   Future<Location> getCityLocation(String cityName) async {
     var response = await Dio().get(_baseUrl, queryParameters: {'name' : cityName, 'count' : 1});
 
-    if (response.statusCode != 200) {
+    print(response);
+
+    if (response.data['results'] == null) {
       throw GeocodingException();
     }
 
