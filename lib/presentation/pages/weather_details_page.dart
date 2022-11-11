@@ -28,8 +28,7 @@ class WeatherDetailsPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Spacer(),
-          const Spacer(),
+          const Spacer(flex: 4,),
           _buildBackButton(context, isNight),
           CityAndDate(weather: weather, isNight: isNight,),
           const Spacer(),
