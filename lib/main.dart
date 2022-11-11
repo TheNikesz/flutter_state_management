@@ -23,7 +23,7 @@ class WeatherApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.white, 
           colorScheme: ColorScheme.fromSwatch().copyWith(primary: Colors.black),
         ),
-        home: WeatherPage(),
+        home: const WeatherPage(),
       ),
     );
   }

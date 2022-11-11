@@ -14,7 +14,7 @@ class WeatherRepository {
   Future<List<Weather>> getWeeklyForecast(String cityName) async {
     try {
       final cityLocation = await _geocodingApi.getCityLocation(cityName);
-      return await _weatherForecastApi.getWeeklyForecast(cityLocation.latitude, cityLocation.longitude);
+      return await _weatherForecastApi.getWeeklyForecast(cityLocation.name, cityLocation.latitude, cityLocation.longitude);
     } catch (e) {
       rethrow;
     }

@@ -11,9 +11,9 @@ class Location {
 
   factory Location.fromMap(Map<String, dynamic> map) {
     return Location(
-      name: map['name'] ?? '',
-      latitude: map['latitude']?.toDouble() ?? 0.0,
-      longitude: map['longitude']?.toDouble() ?? 0.0,
+      name: map['name'],
+      latitude: map['latitude']?.toDouble(),
+      longitude: map['longitude']?.toDouble(),
     );
   }
 
