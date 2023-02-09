@@ -17,7 +17,7 @@ class WeatherApp extends StatelessWidget {
     return RepositoryProvider(
       create: (context) => WeatherRepository(),
       child: MaterialApp(
-        title: 'Weather App (Bloc)',
+        title: 'Weather App (Inherited Widget)',
         theme: ThemeData(
           textTheme: GoogleFonts.montserratTextTheme(),
           scaffoldBackgroundColor: Colors.white, 
