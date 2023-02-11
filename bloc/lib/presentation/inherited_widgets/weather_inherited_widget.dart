@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-import '../../domain/models/weather.dart';
+import '../state/weather_state.dart';
 
 class WeatherInheritedWidget extends InheritedWidget {
   const WeatherInheritedWidget(this.weather, {Key? key, required Widget child})
       : super(key: key, child: child);
 
-  final Weather weather;
+  final WeatherState weather;
 
-  static Weather of(BuildContext context) {
+  static WeatherState of(BuildContext context) {
     return context
         .dependOnInheritedWidgetOfExactType<WeatherInheritedWidget>()!
         .weather;
