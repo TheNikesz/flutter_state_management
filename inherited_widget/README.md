@@ -1,4 +1,4 @@
-# weather_app_bloc
+# weather_app_inherited_widget
 
 A new Flutter project.
 
