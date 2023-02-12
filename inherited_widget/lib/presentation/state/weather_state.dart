@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:weather_app_bloc/domain/models/weather.dart';
+import '../../domain/models/weather.dart';
 
 class WeatherState {
   List<Weather>? weeklyWeather;
