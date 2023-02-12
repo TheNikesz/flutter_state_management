@@ -1,7 +1,7 @@
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:weather_app_bloc/presentation/inherited_widgets/weather_inherited_widget.dart';
-import 'package:weather_app_bloc/presentation/state/weather_state.dart';
+import 'package:flutter/material.dart';
+
+import '../cubits/weather_cubit.dart';
+import '../inherited_widgets/weather_inherited_widget.dart';
 
 class WeatherStateWidget extends StatefulWidget {
   const WeatherStateWidget({super.key, required this.child});
