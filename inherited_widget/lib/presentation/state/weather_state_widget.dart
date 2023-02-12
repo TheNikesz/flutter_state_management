@@ -20,48 +20,52 @@ class WeatherStateWidget extends StatefulWidget {
 
 class WeatherStateWidgetState extends State<WeatherStateWidget> {
   final WeatherRepository _weatherRepository;
-  final WeatherState _weatherState;
+  WeatherState _weatherState = WeatherState();
 
-  WeatherStateWidgetState(
-      {WeatherRepository? weatherRepository, WeatherState? weatherState})
-      : _weatherRepository = weatherRepository ?? WeatherRepository(),
-        _weatherState = weatherState ?? WeatherState();
+  WeatherStateWidgetState({WeatherRepository? weatherRepository})
+      : _weatherRepository = weatherRepository ?? WeatherRepository();
+
+  @override
+  void initState() {
+    super.initState();
+    getWeeklyForecast("Warsaw");
+  }
 
   Future<void> getWeeklyForecast(String cityName) async {
     try {
       setState(() {
-        _weatherState.isLoading = true;
+        _weatherState = _weatherState.copyWith(isLoading: true);
       });
       final weeklyWeather =
           await _weatherRepository.getWeeklyForecast(cityName);
       setState(() {
-        _weatherState.isLoading = false;
-        _weatherState.weeklyWeather = weeklyWeather;
+        _weatherState = _weatherState.copyWith(
+            isLoading: false, weeklyWeather: weeklyWeather);
       });
     } on GeocodingException {
       setState(() {
-        _weatherState.isLoading = false;
-        _weatherState.errorMessage =
-            'Error! Couldn\'t fetch the location of that city.';
+        _weatherState = _weatherState.copyWith(
+            isLoading: false,
+            errorMessage: 'Error! Couldn\'t fetch the location of that city.');
       });
     } on WeatherForecastException {
       setState(() {
-        _weatherState.isLoading = false;
-        _weatherState.errorMessage =
-            'Error! Couldn\'t fetch the weather for that city.';
+        _weatherState = _weatherState.copyWith(
+            isLoading: false,
+            errorMessage: 'Error! Couldn\'t fetch the weather for that city.');
       });
     }
   }
 
   void changeGraphSwitchValue(bool value) {
     setState(() {
-      _weatherState.isChart = value;
+      _weatherState = _weatherState.copyWith(isChart: value);
     });
   }
 
   void changeWeatherSwitchValue(bool value) {
     setState(() {
-      _weatherState.isNight = value;
+      _weatherState = _weatherState.copyWith(isNight: value);
     });
   }
 

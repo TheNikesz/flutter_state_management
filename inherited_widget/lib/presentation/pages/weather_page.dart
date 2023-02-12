@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../constants/app_colors.dart';
-import '../../data/repositories/weather_repository.dart';
 import '../../domain/models/weather.dart' hide DailyWeather;
-import '../cubits/weather_cubit.dart';
+import '../inherited_widgets/weather_inherited_widget.dart';
+import '../state/weather_state_widget.dart';
 import '../widgets/chart_switch.dart';
 import '../widgets/city_and_date.dart';
 import '../widgets/city_search.dart';
@@ -14,52 +13,52 @@ import '../widgets/weather_chart.dart';
 import '../widgets/weather_switch.dart';
 
 class WeatherPage extends StatelessWidget {
-
   const WeatherPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => WeatherCubit(
-        weatherRepository: context.read<WeatherRepository>(),
-      ),
-      child: BlocBuilder<WeatherCubit, WeatherState>(
-        builder: (context, state) {
-          if (state is WeatherInitial) {
-            final weatherCubit = BlocProvider.of<WeatherCubit>(context);
-            weatherCubit.getWeeklyForecast('Warsaw');
-          }
+    final weatherState = WeatherInheritedWidget.of(context);
 
-          return Scaffold(
-            backgroundColor: state is WeatherSuccess && state.isNight == true ? AppColors.nightDarkBlue : Colors.white,
-            resizeToAvoidBottomInset: false,
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (state is WeatherSuccess) ...[
-                  const Spacer(flex: 4,),
-                  CitySearch(isNight: state.isNight),
-                  const Spacer(),
-                  CityAndDate(weather: state.weeklyWeather.first, isNight: state.isNight),
-                  const Spacer(),
-                  MainWeather(weather: state.weeklyWeather.first, isNight: state.isNight),
-                  const Spacer(),
-                  _buildSwitches(state.isChart, state.isNight),
-                  const Spacer(),
-                  if (state.isChart == true) ...[
-                    WeatherChart(weeklyWeather: state.weeklyWeather, isNight: state.isNight),
-                  ] else _buildWeeklyWeather(state.weeklyWeather, state.isNight),
-                  const Spacer(),
-                ] else if (state is WeatherFailure) ...[
-                  const Spacer(),
-                  _buildError(state),
-                  const Spacer(),
-                ] else const Center(child: CircularProgressIndicator()),
-              ],
+    return Scaffold(
+      backgroundColor:
+          weatherState.isNight == true ? AppColors.nightDarkBlue : Colors.white,
+      resizeToAvoidBottomInset: false,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (weatherState.errorMessage != null) ...[
+            const Spacer(),
+            _buildError(weatherState.errorMessage!),
+            const Spacer(),
+          ] else if (!weatherState.isLoading &&
+              weatherState.weeklyWeather != null) ...[
+            const Spacer(
+              flex: 4,
             ),
-          );
-        },
+            CitySearch(isNight: weatherState.isNight),
+            const Spacer(),
+            CityAndDate(
+                weather: weatherState.weeklyWeather!.first,
+                isNight: weatherState.isNight),
+            const Spacer(),
+            MainWeather(
+                weather: weatherState.weeklyWeather!.first,
+                isNight: weatherState.isNight),
+            const Spacer(),
+            _buildSwitches(weatherState.isChart, weatherState.isNight),
+            const Spacer(),
+            if (weatherState.isChart == true) ...[
+              WeatherChart(
+                  weeklyWeather: weatherState.weeklyWeather!,
+                  isNight: weatherState.isNight),
+            ] else
+              _buildWeeklyWeather(
+                  weatherState.weeklyWeather!, weatherState.isNight),
+            const Spacer(),
+          ] else
+            const Center(child: CircularProgressIndicator()),
+        ],
       ),
     );
   }
@@ -91,7 +90,7 @@ class WeatherPage extends StatelessWidget {
     );
   }
 
-  Widget _buildError(WeatherFailure state) {
+  Widget _buildError(String errorMessage) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -104,9 +103,10 @@ class WeatherPage extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 10.0, bottom: 2.0, left: 40.0, right: 40.0),
+          padding: const EdgeInsets.only(
+              top: 10.0, bottom: 2.0, left: 40.0, right: 40.0),
           child: Text(
-            state.errorMessage,
+            errorMessage,
             style: const TextStyle(
               fontSize: 15,
             ),

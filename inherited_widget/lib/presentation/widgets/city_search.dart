@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../constants/app_colors.dart';
-import '../cubits/weather_cubit.dart';
+import '../state/weather_state_widget.dart';
 
 class CitySearch extends StatelessWidget {
   final TextEditingController _citySearchController;
@@ -11,7 +10,8 @@ class CitySearch extends StatelessWidget {
   CitySearch({
     Key? key,
     required this.isNight,
-  }) : _citySearchController = TextEditingController(), super(key: key);
+  })  : _citySearchController = TextEditingController(),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,28 +36,30 @@ class CitySearch extends StatelessWidget {
                     color: isNight ? AppColors.nightText : AppColors.dayText,
                   ),
                   hoverColor: Colors.transparent,
-                  contentPadding: const EdgeInsets.only(left: 15, top: 15, bottom: 15),
+                  contentPadding:
+                      const EdgeInsets.only(left: 15, top: 15, bottom: 15),
                   fillColor: isNight ? AppColors.nightDarkBlue : Colors.white,
                   filled: true,
                   enabledBorder: OutlineInputBorder(
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10)),
-                    borderSide:
-                        BorderSide(
-                          color: isNight ? AppColors.nightLightGray : AppColors.dayDarkGray,
-                          width: 2.0,
-                        ),
+                    borderSide: BorderSide(
+                      color: isNight
+                          ? AppColors.nightLightGray
+                          : AppColors.dayDarkGray,
+                      width: 2.0,
+                    ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(10),
                         bottomLeft: Radius.circular(10)),
-                    borderSide:
-                        BorderSide(
-                          color: isNight ? AppColors.nightLightGray : AppColors.dayDarkGray,
-                          width: 2.0
-                        ),
+                    borderSide: BorderSide(
+                        color: isNight
+                            ? AppColors.nightLightGray
+                            : AppColors.dayDarkGray,
+                        width: 2.0),
                   ),
                 ),
               ),
@@ -73,23 +75,23 @@ class CitySearch extends StatelessWidget {
               height: 50,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                color: isNight ? AppColors.nightLightGray : AppColors.dayLightGray,
+                color:
+                    isNight ? AppColors.nightLightGray : AppColors.dayLightGray,
                 borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(10),
                   bottomRight: Radius.circular(10),
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                child: Icon(
-                  Icons.search,
-                  color: isNight ? AppColors.nightText : AppColors.dayText,
-                )
-              ),
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: Icon(
+                    Icons.search,
+                    color: isNight ? AppColors.nightText : AppColors.dayText,
+                  )),
             ),
             onTap: () {
-              final weatherCubit = BlocProvider.of<WeatherCubit>(context);
-              weatherCubit.getWeeklyForecast(_citySearchController.text);
+              WeatherStateWidget.of(context)
+                  .getWeeklyForecast(_citySearchController.text);
             },
           )
         ],
