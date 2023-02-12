@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../data/data_sources/api.dart';
 import '../../data/repositories/weather_repository.dart';
 import '../inherited_widgets/weather_inherited_widget.dart';
 import 'weather_state.dart';
@@ -18,40 +19,50 @@ class WeatherStateWidget extends StatefulWidget {
 }
 
 class WeatherStateWidgetState extends State<WeatherStateWidget> {
-  WeatherState _weatherState = WeatherState();
+  final WeatherRepository _weatherRepository;
+  final WeatherState _weatherState;
 
-   final WeatherRepository weatherRepository;
-
-  WeatherCubit({required this.weatherRepository}) : super(const WeatherInitial());
+  WeatherStateWidgetState(
+      {WeatherRepository? weatherRepository, WeatherState? weatherState})
+      : _weatherRepository = weatherRepository ?? WeatherRepository(),
+        _weatherState = weatherState ?? WeatherState();
 
   Future<void> getWeeklyForecast(String cityName) async {
     try {
-      emit(const WeatherLoading());
-      final weeklyWeather = await weatherRepository.getWeeklyForecast(cityName);
-      emit(WeatherSuccess(
-        weeklyWeather: weeklyWeather
-      ));
+      setState(() {
+        _weatherState.isLoading = true;
+      });
+      final weeklyWeather =
+          await _weatherRepository.getWeeklyForecast(cityName);
+      setState(() {
+        _weatherState.isLoading = false;
+        _weatherState.weeklyWeather = weeklyWeather;
+      });
     } on GeocodingException {
-      emit(const WeatherFailure('Error! Couldn\'t fetch the location of that city.'));
+      setState(() {
+        _weatherState.isLoading = false;
+        _weatherState.errorMessage =
+            'Error! Couldn\'t fetch the location of that city.';
+      });
     } on WeatherForecastException {
-      emit(const WeatherFailure('Error! Couldn\'t fetch the weather for that city.'));
+      setState(() {
+        _weatherState.isLoading = false;
+        _weatherState.errorMessage =
+            'Error! Couldn\'t fetch the weather for that city.';
+      });
     }
   }
 
   void changeGraphSwitchValue(bool value) {
-    if (state is WeatherSuccess) {
-      emit((state as WeatherSuccess).copyWith(
-        isChart: value,
-      ));
-    }
+    setState(() {
+      _weatherState.isChart = value;
+    });
   }
 
   void changeWeatherSwitchValue(bool value) {
-    if (state is WeatherSuccess) {
-      emit((state as WeatherSuccess).copyWith(
-        isNight: value,
-      ));
-    }
+    setState(() {
+      _weatherState.isNight = value;
+    });
   }
 
   @override

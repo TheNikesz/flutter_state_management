@@ -5,6 +5,7 @@ import 'package:weather_icons/weather_icons.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_icons.dart';
 import '../../domain/models/weather.dart';
+import '../pages/weather_details_page.dart';
 
 class DailyWeather extends StatelessWidget {
   final Weather weather;

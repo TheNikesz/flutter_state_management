@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/foundation.dart';
 
 import '../../domain/models/weather.dart';
@@ -7,12 +8,14 @@ class WeatherState {
   bool isLoading;
   bool isChart;
   bool isNight;
+  String? errorMessage;
 
   WeatherState({
     this.weeklyWeather,
     this.isLoading = true,
     this.isChart = false,
     this.isNight = false,
+    this.errorMessage,
   });
 
   WeatherState copyWith({
@@ -20,18 +23,20 @@ class WeatherState {
     bool? isLoading,
     bool? isChart,
     bool? isNight,
+    String? errorMessage,
   }) {
     return WeatherState(
       weeklyWeather: weeklyWeather ?? this.weeklyWeather,
       isLoading: isLoading ?? this.isLoading,
       isChart: isChart ?? this.isChart,
       isNight: isNight ?? this.isNight,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
   String toString() {
-    return 'WeatherState(weeklyWeather: $weeklyWeather, isLoading: $isLoading, isChart: $isChart, isNight: $isNight)';
+    return 'WeatherState(weeklyWeather: $weeklyWeather, isLoading: $isLoading, isChart: $isChart, isNight: $isNight, errorMessage: $errorMessage)';
   }
 
   @override
@@ -41,7 +46,8 @@ class WeatherState {
     return listEquals(other.weeklyWeather, weeklyWeather) &&
         other.isLoading == isLoading &&
         other.isChart == isChart &&
-        other.isNight == isNight;
+        other.isNight == isNight &&
+        other.errorMessage == errorMessage;
   }
 
   @override
@@ -49,6 +55,7 @@ class WeatherState {
     return weeklyWeather.hashCode ^
         isLoading.hashCode ^
         isChart.hashCode ^
-        isNight.hashCode;
+        isNight.hashCode ^
+        errorMessage.hashCode;
   }
 }
