@@ -21,10 +21,10 @@ class CityAndDate extends StatelessWidget {
         children: [
           Text(weather.cityName,
               style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 40,
-                  color: isNight ? AppColors.nightText : AppColors.dayText,
-              )
-            ),
+                fontWeight: FontWeight.bold,
+                fontSize: 40,
+                color: isNight ? AppColors.nightText : AppColors.dayText,
+              )),
           Text(
             DateFormat('EEE dd/MM/yy').format(DateTime.parse(weather.date)),
             style: TextStyle(

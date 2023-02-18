@@ -1,65 +1,68 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../constants/app_colors.dart';
-import '../../data/repositories/weather_repository.dart';
-import '../../domain/models/weather.dart' hide DailyWeather;
-import '../cubits/weather_cubit.dart';
-import '../widgets/chart_switch.dart';
-import '../widgets/city_and_date.dart';
-import '../widgets/city_search.dart';
-import '../widgets/daily_weather.dart';
-import '../widgets/main_weather.dart';
-import '../widgets/weather_chart.dart';
-import '../widgets/weather_switch.dart';
+import 'package:flutter_triple/flutter_triple.dart';
+import 'package:weather_app_triple/constants/app_colors.dart';
+import 'package:weather_app_triple/domain/models/weather.dart'
+    hide DailyWeather;
+import 'package:weather_app_triple/main.dart';
+import 'package:weather_app_triple/presentation/triple/weather_store.dart';
+import 'package:weather_app_triple/presentation/triple/weather_success.dart';
+import 'package:weather_app_triple/presentation/widgets/chart_switch.dart';
+import 'package:weather_app_triple/presentation/widgets/city_and_date.dart';
+import 'package:weather_app_triple/presentation/widgets/city_search.dart';
+import 'package:weather_app_triple/presentation/widgets/daily_weather.dart';
+import 'package:weather_app_triple/presentation/widgets/main_weather.dart';
+import 'package:weather_app_triple/presentation/widgets/weather_chart.dart';
+import 'package:weather_app_triple/presentation/widgets/weather_switch.dart';
 
 class WeatherPage extends StatelessWidget {
+  WeatherPage({super.key});
 
-  const WeatherPage({super.key});
+  final WeatherStore weatherStore = getIt<WeatherStore>();
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => WeatherCubit(
-        weatherRepository: context.read<WeatherRepository>(),
-      ),
-      child: BlocBuilder<WeatherCubit, WeatherState>(
-        builder: (context, state) {
-          if (state is WeatherInitial) {
-            final weatherCubit = BlocProvider.of<WeatherCubit>(context);
-            weatherCubit.getWeeklyForecast('Warsaw');
-          }
-
-          return Scaffold(
-            backgroundColor: state is WeatherSuccess && state.isNight == true ? AppColors.nightDarkBlue : Colors.white,
-            resizeToAvoidBottomInset: false,
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (state is WeatherSuccess) ...[
-                  const Spacer(flex: 4,),
-                  CitySearch(isNight: state.isNight),
-                  const Spacer(),
-                  CityAndDate(weather: state.weeklyWeather.first, isNight: state.isNight),
-                  const Spacer(),
-                  MainWeather(weather: state.weeklyWeather.first, isNight: state.isNight),
-                  const Spacer(),
-                  _buildSwitches(state.isChart, state.isNight),
-                  const Spacer(),
-                  if (state.isChart == true) ...[
-                    WeatherChart(weeklyWeather: state.weeklyWeather, isNight: state.isNight),
-                  ] else _buildWeeklyWeather(state.weeklyWeather, state.isNight),
-                  const Spacer(),
-                ] else if (state is WeatherFailure) ...[
-                  const Spacer(),
-                  _buildError(state),
-                  const Spacer(),
-                ] else const Center(child: CircularProgressIndicator()),
-              ],
-            ),
-          );
-        },
+    return Scaffold(
+      backgroundColor: weatherStore.state.isNight == true
+          ? AppColors.nightDarkBlue
+          : Colors.white,
+      resizeToAvoidBottomInset: false,
+      body: ScopedBuilder<WeatherStore, Exception, WeatherSuccess>(
+        store: weatherStore,
+        onState: (context, state) => Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Spacer(
+                flex: 4,
+              ),
+              CitySearch(isNight: state.isNight),
+              const Spacer(),
+              CityAndDate(
+                  weather: state.weeklyWeather.first, isNight: state.isNight),
+              const Spacer(),
+              MainWeather(
+                  weather: state.weeklyWeather.first, isNight: state.isNight),
+              const Spacer(),
+              _buildSwitches(state.isChart, state.isNight),
+              const Spacer(),
+              if (state.isChart == true) ...[
+                WeatherChart(
+                    weeklyWeather: state.weeklyWeather, isNight: state.isNight),
+              ] else
+                _buildWeeklyWeather(state.weeklyWeather, state.isNight),
+              const Spacer(),
+            ]),
+        onError: (context, error) => Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Spacer(),
+            _buildError("$error"),
+            const Spacer(),
+          ],
+        ),
+        onLoading: (context) =>
+            const Center(child: CircularProgressIndicator()),
       ),
     );
   }
@@ -91,7 +94,7 @@ class WeatherPage extends StatelessWidget {
     );
   }
 
-  Widget _buildError(WeatherFailure state) {
+  Widget _buildError(String state) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -104,9 +107,10 @@ class WeatherPage extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 10.0, bottom: 2.0, left: 40.0, right: 40.0),
+          padding: const EdgeInsets.only(
+              top: 10.0, bottom: 2.0, left: 40.0, right: 40.0),
           child: Text(
-            state.errorMessage,
+            state,
             style: const TextStyle(
               fontSize: 15,
             ),

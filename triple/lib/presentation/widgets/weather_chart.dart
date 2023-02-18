@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 import 'package:intl/intl.dart';
-
-import '../../constants/app_colors.dart';
-import '../../domain/models/weather.dart';
+import 'package:weather_app_triple/constants/app_colors.dart';
+import 'package:weather_app_triple/domain/models/weather.dart';
 
 class WeatherChart extends StatelessWidget {
   final List<Weather> weeklyWeather;
@@ -24,11 +23,14 @@ class WeatherChart extends StatelessWidget {
     for (var i = 0; i < weeklyWeather.length; i++) {
       maxTemperatures.add(weeklyWeather.elementAt(i).maxTemperature);
       minTemperatures.add(weeklyWeather.elementAt(i).minTemperature);
-      dates.add(DateFormat('dd/MM').format(DateTime.parse(weeklyWeather.elementAt(i).date)));
+      dates.add(DateFormat('dd/MM')
+          .format(DateTime.parse(weeklyWeather.elementAt(i).date)));
     }
 
-    var max = maxTemperatures.reduce((curr, next) => curr > next? curr: next) + 1;
-    var min = minTemperatures.reduce((curr, next) => curr < next? curr: next) - 1;
+    var max =
+        maxTemperatures.reduce((curr, next) => curr > next ? curr : next) + 1;
+    var min =
+        minTemperatures.reduce((curr, next) => curr < next ? curr : next) - 1;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 50.0),
@@ -40,20 +42,27 @@ class WeatherChart extends StatelessWidget {
             borderRadius: const BorderRadius.all(Radius.circular(10)),
           ),
           child: Padding(
-            padding: const EdgeInsets.only(top: 10.0, bottom: 10.0, right: 10.0),
+            padding:
+                const EdgeInsets.only(top: 10.0, bottom: 10.0, right: 10.0),
             child: Chart(
-              data: isNight ? _getData(dates, minTemperatures, true) : _getData(dates, maxTemperatures, false),
+              data: isNight
+                  ? _getData(dates, minTemperatures, true)
+                  : _getData(dates, maxTemperatures, false),
               variables: _getVariables(isNight, max, min),
-              elements: [LineElement(
-                color: ColorAttr(
-                  value: isNight ? AppColors.nightText : AppColors.dayText,
-                ),
-              )],
+              elements: [
+                LineElement(
+                  color: ColorAttr(
+                    value: isNight ? AppColors.nightText : AppColors.dayText,
+                  ),
+                )
+              ],
               axes: [
                 Defaults.horizontalAxis
                   ..grid = StrokeStyle(
-                      color: isNight ? AppColors.nightLightGray : AppColors.dayDarkGray,
-                    )
+                    color: isNight
+                        ? AppColors.nightLightGray
+                        : AppColors.dayDarkGray,
+                  )
                   ..line = null
                   ..label = LabelStyle(
                     offset: const Offset(0, 10),
@@ -66,8 +75,10 @@ class WeatherChart extends StatelessWidget {
                   ),
                 Defaults.verticalAxis
                   ..grid = StrokeStyle(
-                      color: isNight ? AppColors.nightLightGray : AppColors.dayDarkGray,
-                    )
+                    color: isNight
+                        ? AppColors.nightLightGray
+                        : AppColors.dayDarkGray,
+                  )
                   ..line = null
                   ..label = LabelStyle(
                     offset: const Offset(-10, 0),
@@ -86,31 +97,78 @@ class WeatherChart extends StatelessWidget {
     );
   }
 
-  List<Map<dynamic, dynamic>> _getData(List<String> dates, List<double> temperatures, bool isNight) {
+  List<Map<dynamic, dynamic>> _getData(
+      List<String> dates, List<double> temperatures, bool isNight) {
     if (isNight) {
       return [
-        { 'night': dates.elementAt(0), 'minTemperature': temperatures.elementAt(0) },
-        { 'night': dates.elementAt(1), 'minTemperature': temperatures.elementAt(1) },
-        { 'night': dates.elementAt(2), 'minTemperature': temperatures.elementAt(2) },
-        { 'night': dates.elementAt(3), 'minTemperature': temperatures.elementAt(3) },
-        { 'night': dates.elementAt(4), 'minTemperature': temperatures.elementAt(4) },
-        { 'night': dates.elementAt(5), 'minTemperature': temperatures.elementAt(5) },
-        { 'night': dates.elementAt(6), 'minTemperature': temperatures.elementAt(6) },
+        {
+          'night': dates.elementAt(0),
+          'minTemperature': temperatures.elementAt(0)
+        },
+        {
+          'night': dates.elementAt(1),
+          'minTemperature': temperatures.elementAt(1)
+        },
+        {
+          'night': dates.elementAt(2),
+          'minTemperature': temperatures.elementAt(2)
+        },
+        {
+          'night': dates.elementAt(3),
+          'minTemperature': temperatures.elementAt(3)
+        },
+        {
+          'night': dates.elementAt(4),
+          'minTemperature': temperatures.elementAt(4)
+        },
+        {
+          'night': dates.elementAt(5),
+          'minTemperature': temperatures.elementAt(5)
+        },
+        {
+          'night': dates.elementAt(6),
+          'minTemperature': temperatures.elementAt(6)
+        },
       ];
     } else {
       return [
-        { 'day': dates.elementAt(0), 'maxTemperature': temperatures.elementAt(0) },
-        { 'day': dates.elementAt(1), 'maxTemperature': temperatures.elementAt(1) },
-        { 'day': dates.elementAt(2), 'maxTemperature': temperatures.elementAt(2) },
-        { 'day': dates.elementAt(3), 'maxTemperature': temperatures.elementAt(3) },
-        { 'day': dates.elementAt(4), 'maxTemperature': temperatures.elementAt(4) },
-        { 'day': dates.elementAt(5), 'maxTemperature': temperatures.elementAt(5) },
-        { 'day': dates.elementAt(6), 'maxTemperature': temperatures.elementAt(6) },
+        {
+          'day': dates.elementAt(0),
+          'maxTemperature': temperatures.elementAt(0)
+        },
+        {
+          'day': dates.elementAt(1),
+          'maxTemperature': temperatures.elementAt(1)
+        },
+        {
+          'day': dates.elementAt(2),
+          'maxTemperature': temperatures.elementAt(2)
+        },
+        {
+          'day': dates.elementAt(3),
+          'maxTemperature': temperatures.elementAt(3)
+        },
+        {
+          'day': dates.elementAt(4),
+          'maxTemperature': temperatures.elementAt(4)
+        },
+        {
+          'day': dates.elementAt(5),
+          'maxTemperature': temperatures.elementAt(5)
+        },
+        {
+          'day': dates.elementAt(6),
+          'maxTemperature': temperatures.elementAt(6)
+        },
       ];
     }
   }
 
-  Map<String, Variable<Map<dynamic, dynamic>, dynamic>> _getVariables(bool isNight, double max, double min,) {
+  Map<String, Variable<Map<dynamic, dynamic>, dynamic>> _getVariables(
+    bool isNight,
+    double max,
+    double min,
+  ) {
     if (isNight) {
       return {
         'night': Variable(
@@ -119,10 +177,9 @@ class WeatherChart extends StatelessWidget {
         'minTemperature': Variable(
           accessor: (Map map) => map['minTemperature'] as double,
           scale: LinearScale(
-            min: min,
-            max: max,
-            formatter: (value) => value.toStringAsFixed(0)
-          ),
+              min: min,
+              max: max,
+              formatter: (value) => value.toStringAsFixed(0)),
         ),
       };
     } else {
@@ -133,10 +190,9 @@ class WeatherChart extends StatelessWidget {
         'maxTemperature': Variable(
           accessor: (Map map) => map['maxTemperature'] as double,
           scale: LinearScale(
-            min: min,
-            max: max,
-            formatter: (value) => value.toStringAsFixed(0)
-          ),
+              min: min,
+              max: max,
+              formatter: (value) => value.toStringAsFixed(0)),
         ),
       };
     }

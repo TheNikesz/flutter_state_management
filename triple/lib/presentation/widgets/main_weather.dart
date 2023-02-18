@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app_bloc/domain/models/weather.dart';
+import 'package:weather_app_triple/constants/app_colors.dart';
+import 'package:weather_app_triple/constants/app_icons.dart';
+import 'package:weather_app_triple/constants/app_labels.dart';
+import 'package:weather_app_triple/domain/models/weather.dart';
+import 'package:weather_app_triple/presentation/pages/weather_details_page.dart';
 import 'package:weather_icons/weather_icons.dart';
-
-import '../../constants/app_colors.dart';
-import '../../constants/app_icons.dart';
-import '../../constants/app_labels.dart';
-import '../pages/weather_details_page.dart';
 
 class MainWeather extends StatelessWidget {
   final Weather weather;

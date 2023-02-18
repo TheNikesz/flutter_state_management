@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:weather_app_triple/constants/app_colors.dart';
+import 'package:weather_app_triple/main.dart';
 import 'package:weather_icons/weather_icons.dart';
 
-import '../../constants/app_colors.dart';
-import '../cubits/weather_cubit.dart';
+import '../triple/weather_store.dart';
 
 class WeatherSwitch extends StatelessWidget {
   final bool isNight;
@@ -30,8 +30,7 @@ class WeatherSwitch extends StatelessWidget {
           inactiveTrackColor: Colors.black87,
           value: isNight,
           onChanged: (value) {
-            final weatherCubit = BlocProvider.of<WeatherCubit>(context);
-            weatherCubit.changeWeatherSwitchValue(value);
+            getIt<WeatherStore>().changeWeatherSwitchValue(value);
           },
         ),
         BoxedIcon(
