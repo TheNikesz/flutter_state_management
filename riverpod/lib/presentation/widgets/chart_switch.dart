@@ -1,0 +1,42 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../constants/app_colors.dart';
+import '../controllers/providers.dart';
+
+class ChartSwitch extends ConsumerWidget {
+  final bool isNight;
+  final bool isGraph;
+
+  const ChartSwitch({
+    Key? key,
+    required this.isNight,
+    required this.isGraph,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.reorder,
+          color: isNight ? Colors.white : Colors.black,
+        ),
+        Switch(
+          hoverColor: Colors.transparent,
+          activeColor: isNight ? AppColors.dayDarkGray : Colors.black,
+          activeTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
+          inactiveThumbColor: isNight ? AppColors.dayDarkGray : Colors.black,
+          inactiveTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
+          value: isGraph,
+          onChanged: (value) => ref.read(switchProvider.notifier).state = ref.read(switchProvider.notifier).state.copyWith(isChart: value),
+        ),
+        Icon(
+          Icons.show_chart,
+          color: isNight ? Colors.white : Colors.black,
+        ),
+      ],
+    );
+  }
+}
