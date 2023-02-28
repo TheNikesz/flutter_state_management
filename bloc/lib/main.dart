@@ -21,7 +21,6 @@ class WeatherApp extends StatelessWidget {
         theme: ThemeData(
           textTheme: GoogleFonts.montserratTextTheme(),
           scaffoldBackgroundColor: Colors.white, 
-          colorScheme: ColorScheme.fromSwatch().copyWith(primary: Colors.black),
         ),
         home: const WeatherPage(),
       ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../constants/app_colors.dart';
-import '../cubits/weather_cubit.dart';
+import '../cubits/switch_cubit.dart';
 
 class ChartSwitch extends StatelessWidget {
   final bool isNight;
@@ -31,8 +31,8 @@ class ChartSwitch extends StatelessWidget {
           inactiveTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
           value: isGraph,
           onChanged: (value) {
-            final weatherCubit = BlocProvider.of<WeatherCubit>(context);
-            weatherCubit.changeGraphSwitchValue(value);
+            final switchCubit = BlocProvider.of<SwitchCubit>(context);
+            switchCubit.changeGraphSwitchValue(value);
           },
         ),
         Icon(
