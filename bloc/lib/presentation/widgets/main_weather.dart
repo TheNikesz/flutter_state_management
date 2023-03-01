@@ -41,7 +41,7 @@ class MainWeather extends StatelessWidget {
                       padding: const EdgeInsets.all(6.0),
                       child: BoxedIcon(
                         AppIcons.getWeatherIcon(weather.weatherCode, isNight),
-                        color: isNight ? Colors.white : Colors.black,
+                        color: isNight ? AppColors.nightText : AppColors.dayText,
                         size: 80.0,
                       ),
                     ),
