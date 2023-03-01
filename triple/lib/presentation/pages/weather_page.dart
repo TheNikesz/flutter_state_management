@@ -4,8 +4,9 @@ import 'package:weather_app_triple/constants/app_colors.dart';
 import 'package:weather_app_triple/domain/models/weather.dart'
     hide DailyWeather;
 import 'package:weather_app_triple/main.dart';
+import 'package:weather_app_triple/presentation/triple/switch_store.dart';
 import 'package:weather_app_triple/presentation/triple/weather_store.dart';
-import 'package:weather_app_triple/presentation/triple/weather_success.dart';
+import 'package:weather_app_triple/presentation/triple/switch_state.dart';
 import 'package:weather_app_triple/presentation/widgets/chart_switch.dart';
 import 'package:weather_app_triple/presentation/widgets/city_and_date.dart';
 import 'package:weather_app_triple/presentation/widgets/city_search.dart';
@@ -18,53 +19,59 @@ class WeatherPage extends StatelessWidget {
   WeatherPage({super.key});
 
   final WeatherStore weatherStore = getIt<WeatherStore>();
+  final SwitchStore switchStore = getIt<SwitchStore>();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: weatherStore.state.isNight == true
-          ? AppColors.nightDarkBlue
-          : Colors.white,
-      resizeToAvoidBottomInset: false,
-      body: ScopedBuilder<WeatherStore, Exception, WeatherSuccess>(
-        store: weatherStore,
-        onState: (context, state) => Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Spacer(
-                flex: 4,
+    return ScopedBuilder<SwitchStore, Exception, SwitchState>(
+        store: switchStore,
+        onState: (context, switchState) {
+          return Scaffold(
+            backgroundColor: switchState.isNight == true
+                ? AppColors.nightDarkBlue
+                : Colors.white,
+            resizeToAvoidBottomInset: false,
+            body: ScopedBuilder<WeatherStore, Exception, List<Weather>>(
+              store: weatherStore,
+              onState: (context, state) => Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Spacer(
+                    flex: 4,
+                  ),
+                  CitySearch(isNight: switchState.isNight),
+                  const Spacer(),
+                  CityAndDate(
+                      weather: state.first, isNight: switchState.isNight),
+                  const Spacer(),
+                  MainWeather(
+                      weather: state.first, isNight: switchState.isNight),
+                  const Spacer(),
+                  _buildSwitches(switchState.isChart, switchState.isNight),
+                  const Spacer(),
+                  if (switchState.isChart == true) ...[
+                    WeatherChart(
+                        weeklyWeather: state, isNight: switchState.isNight),
+                  ] else
+                    _buildWeeklyWeather(state, switchState.isNight),
+                  const Spacer(),
+                ],
               ),
-              CitySearch(isNight: state.isNight),
-              const Spacer(),
-              CityAndDate(
-                  weather: state.weeklyWeather.first, isNight: state.isNight),
-              const Spacer(),
-              MainWeather(
-                  weather: state.weeklyWeather.first, isNight: state.isNight),
-              const Spacer(),
-              _buildSwitches(state.isChart, state.isNight),
-              const Spacer(),
-              if (state.isChart == true) ...[
-                WeatherChart(
-                    weeklyWeather: state.weeklyWeather, isNight: state.isNight),
-              ] else
-                _buildWeeklyWeather(state.weeklyWeather, state.isNight),
-              const Spacer(),
-            ]),
-        onError: (context, error) => Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Spacer(),
-            _buildError("$error"),
-            const Spacer(),
-          ],
-        ),
-        onLoading: (context) =>
-            const Center(child: CircularProgressIndicator()),
-      ),
-    );
+              onError: (context, error) => Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Spacer(),
+                  _buildError("$error"),
+                  const Spacer(),
+                ],
+              ),
+              onLoading: (context) =>
+                  const Center(child: CircularProgressIndicator()),
+            ),
+          );
+        });
   }
 
   Widget _buildSwitches(bool isChart, bool isNight) {

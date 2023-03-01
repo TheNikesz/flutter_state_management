@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import '../../constants/app_colors.dart';
-import '../../domain/models/weather.dart';
+import 'package:weather_app_triple/constants/app_colors.dart';
+import 'package:weather_app_triple/domain/models/weather.dart';
 
 class CityAndDate extends StatelessWidget {
   final Weather weather;
