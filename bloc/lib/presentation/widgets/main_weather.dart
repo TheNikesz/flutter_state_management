@@ -26,7 +26,13 @@ class MainWeather extends StatelessWidget {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => WeatherDetailsPage(weather: weather, isNight: isNight,)));  
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => WeatherDetailsPage(
+                        weather: weather,
+                        isNight: isNight,
+                      )));
         },
         child: SizedBox(
           width: 350.0,
@@ -35,31 +41,31 @@ class MainWeather extends StatelessWidget {
             children: [
               Align(
                 alignment: Alignment.centerLeft,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: BoxedIcon(
-                        AppIcons.getWeatherIcon(weather.weatherCode, isNight),
-                        color: isNight ? AppColors.nightText : AppColors.dayText,
-                        size: 80.0,
-                      ),
+                child: Column(children: [
+                  Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: BoxedIcon(
+                      AppIcons.getWeatherIcon(weather.weatherCode, isNight),
+                      color: isNight ? AppColors.nightText : AppColors.dayText,
+                      size: 80.0,
                     ),
-                    Text(
-                      AppLabels.getWeatherLabel(weather.weatherCode),
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: isNight ? AppColors.nightText : AppColors.dayText,
-                      ),
+                  ),
+                  Text(
+                    AppLabels.getWeatherLabel(weather.weatherCode),
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: isNight ? AppColors.nightText : AppColors.dayText,
                     ),
-                  ]
-                ),
+                  ),
+                ]),
               ),
               Center(
                 child: SizedBox(
                   height: 150,
                   child: VerticalDivider(
-                    color: isNight ? AppColors.nightLightGray : AppColors.dayDarkGray,
+                    color: isNight
+                        ? AppColors.nightLightGray
+                        : AppColors.dayDarkGray,
                     thickness: 3,
                   ),
                 ),
@@ -67,11 +73,26 @@ class MainWeather extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  isNight ? '${weather.minTemperature.toStringAsFixed(0)}°' : '${weather.maxTemperature.toStringAsFixed(0)}°',
+                  // isNight ? '${weather.minTemperature.toStringAsFixed(0)}°' : '${weather.maxTemperature.toStringAsFixed(0)}°',
+                  (() {
+                    String temperature;
+                    if (isNight) {
+                      temperature =
+                          '${weather.minTemperature.toStringAsFixed(0)}°';
+                    } else {
+                      temperature =
+                          '${weather.maxTemperature.toStringAsFixed(0)}°';
+                    }
+                    if (temperature == '-0°') {
+                      return '0';
+                    } else {
+                      return temperature;
+                    }
+                  }()),
                   style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 90,
-                      color: isNight ? AppColors.nightText : AppColors.dayText,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 90,
+                    color: isNight ? AppColors.nightText : AppColors.dayText,
                   ),
                 ),
               ),

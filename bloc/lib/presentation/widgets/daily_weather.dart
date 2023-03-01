@@ -28,11 +28,18 @@ class DailyWeather extends StatelessWidget {
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => WeatherDetailsPage(weather: weather, isNight: isNight,)));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => WeatherDetailsPage(
+                          weather: weather,
+                          isNight: isNight,
+                        )));
           },
-          child:  DecoratedBox(
+          child: DecoratedBox(
             decoration: BoxDecoration(
-              color: isNight ? AppColors.nightLightBlue : AppColors.dayLightGray,
+              color:
+                  isNight ? AppColors.nightLightBlue : AppColors.dayLightGray,
               borderRadius: const BorderRadius.all(Radius.circular(10)),
             ),
             child: Padding(
@@ -47,28 +54,41 @@ class DailyWeather extends StatelessWidget {
                     child: Text(
                       DateFormat('EEEE').format(DateTime.parse(weather.date)),
                       style: TextStyle(
-                        color: isNight ? AppColors.nightText : AppColors.dayText,
+                        color:
+                            isNight ? AppColors.nightText : AppColors.dayText,
                       ),
                     ),
                   ),
                   Center(
                     child: BoxedIcon(
-                      AppIcons.getWeatherIcon(
-                        weather.weatherCode, isNight
-                      ),
+                      AppIcons.getWeatherIcon(weather.weatherCode, isNight),
                       size: 20.0,
                       color: isNight ? Colors.white : Colors.black,
                     ),
                   ),
                   Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      isNight ? '${weather.minTemperature.toStringAsFixed(0)}°' : '${weather.maxTemperature.toStringAsFixed(0)}°',
-                      style: TextStyle(
-                        color: isNight ? AppColors.nightText : AppColors.dayText,
-                      ),
-                    )
-                  )
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        (() {
+                          String temperature;
+                          if (isNight) {
+                            temperature =
+                                '${weather.minTemperature.toStringAsFixed(0)}°';
+                          } else {
+                            temperature =
+                                '${weather.maxTemperature.toStringAsFixed(0)}°';
+                          }
+                          if (temperature == '-0°') {
+                            return '0°';
+                          } else {
+                            return temperature;
+                          }
+                        }()),
+                        style: TextStyle(
+                          color:
+                              isNight ? AppColors.nightText : AppColors.dayText,
+                        ),
+                      ))
                 ],
               ),
             ),
