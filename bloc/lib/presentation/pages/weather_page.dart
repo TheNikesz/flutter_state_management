@@ -49,9 +49,7 @@ class WeatherPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (weatherState is WeatherSuccess) ...[
-                      const Spacer(
-                        flex: 4,
-                      ),
+                      const Spacer(),
                       CitySearch(isNight: switchState.isNight),
                       const Spacer(),
                       CityAndDate(

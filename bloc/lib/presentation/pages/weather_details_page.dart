@@ -8,6 +8,7 @@ import '../../constants/app_icons.dart';
 import '../../constants/app_labels.dart';
 import '../../domain/models/weather.dart';
 import '../widgets/city_and_date.dart';
+import '../widgets/weather_details_back_button.dart';
 
 class WeatherDetailsPage extends StatelessWidget {
   final Weather weather;
@@ -28,9 +29,18 @@ class WeatherDetailsPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Spacer(flex: 4,),
-          _buildBackButton(context, isNight),
-          CityAndDate(weather: weather, isNight: isNight,),
+          const Spacer(),
+          Stack(
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: WeatherDetailsBackButton(isNight: isNight,),
+              ),
+              Center(
+                child: CityAndDate(weather: weather, isNight: isNight,)
+              ),
+            ]
+          ),
           const Spacer(),
           Column(
             children: [
@@ -97,25 +107,6 @@ class WeatherDetailsPage extends StatelessWidget {
           ),
           const Spacer(),
         ],
-      ),
-    );
-  }
-
-  _buildBackButton(BuildContext context, bool isNight) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40.0),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: isNight ? Colors.white : Colors.black,
-            size: 30,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
     );
   }
