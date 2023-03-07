@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../constants/app_colors.dart';
+import '../cubits/settings_cubit.dart';
 import '../widgets/favourite_city.dart';
 import '../widgets/settings_chart_switch.dart';
 import '../widgets/settings_weather_switch.dart';
@@ -14,7 +16,6 @@ class WeatherSettingsPage extends StatelessWidget {
     required this.isNight,
   }) : super(key: key);
 
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +26,11 @@ class WeatherSettingsPage extends StatelessWidget {
         children: [
           const Spacer(),
           FavouriteCity(isNight: isNight),
-          TemperatureScaleSwitch(isNight: isNight),
+          BlocBuilder<SettingsCubit, SettingsState>(
+            builder: (context, settingsState) {
+              return TemperatureScaleSwitch(isNight: isNight, isFahrenheit: settingsState.isFahrenheit,);
+            },
+          ),
           SettingsChartSwitch(isNight: isNight),
           SettingsWeatherSwitch(isNight: isNight),
           const Spacer(),

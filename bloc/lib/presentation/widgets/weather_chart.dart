@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 import 'package:intl/intl.dart';
+import 'package:weather_app_bloc/constants/temperature_calculator.dart';
 
 import '../../constants/app_colors.dart';
 import '../../domain/models/weather.dart';
@@ -8,22 +9,24 @@ import '../../domain/models/weather.dart';
 class WeatherChart extends StatelessWidget {
   final List<Weather> weeklyWeather;
   final bool isNight;
+  final bool isFahrenheit;
 
   const WeatherChart({
     Key? key,
     required this.weeklyWeather,
     required this.isNight,
+    required this.isFahrenheit,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<double> maxTemperatures = [];
-    List<double> minTemperatures = [];
+    List<int> maxTemperatures = [];
+    List<int> minTemperatures = [];
     List<String> dates = [];
 
     for (var i = 0; i < weeklyWeather.length; i++) {
-      maxTemperatures.add(weeklyWeather.elementAt(i).maxTemperature);
-      minTemperatures.add(weeklyWeather.elementAt(i).minTemperature);
+      maxTemperatures.add(TemperatureCalculator.getTemperature(weeklyWeather.elementAt(i).maxTemperature, isFahrenheit));
+      minTemperatures.add(TemperatureCalculator.getTemperature(weeklyWeather.elementAt(i).minTemperature, isFahrenheit));
       dates.add(DateFormat('dd/MM').format(DateTime.parse(weeklyWeather.elementAt(i).date)));
     }
 
@@ -86,7 +89,7 @@ class WeatherChart extends StatelessWidget {
     );
   }
 
-  List<Map<dynamic, dynamic>> _getData(List<String> dates, List<double> temperatures, bool isNight) {
+  List<Map<dynamic, dynamic>> _getData(List<String> dates, List<int> temperatures, bool isNight) {
     if (isNight) {
       return [
         { 'night': dates.elementAt(0), 'minTemperature': temperatures.elementAt(0) },
@@ -110,14 +113,14 @@ class WeatherChart extends StatelessWidget {
     }
   }
 
-  Map<String, Variable<Map<dynamic, dynamic>, dynamic>> _getVariables(bool isNight, double max, double min,) {
+  Map<String, Variable<Map<dynamic, dynamic>, dynamic>> _getVariables(bool isNight, int max, int min,) {
     if (isNight) {
       return {
         'night': Variable(
           accessor: (Map map) => map['night'] as String,
         ),
         'minTemperature': Variable(
-          accessor: (Map map) => map['minTemperature'] as double,
+          accessor: (Map map) => map['minTemperature'] as int,
           scale: LinearScale(
             min: min,
             max: max,
@@ -131,7 +134,7 @@ class WeatherChart extends StatelessWidget {
           accessor: (Map map) => map['day'] as String,
         ),
         'maxTemperature': Variable(
-          accessor: (Map map) => map['maxTemperature'] as double,
+          accessor: (Map map) => map['maxTemperature'] as int,
           scale: LinearScale(
             min: min,
             max: max,

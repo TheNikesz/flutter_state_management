@@ -68,12 +68,14 @@ class CitySearch extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: 'Enter a city name',
                   hintStyle: TextStyle(
+                    height: 3.15,
                     color: isNight ? AppColors.nightText : AppColors.dayText,
                   ),
                   hoverColor: Colors.transparent,
                   fillColor: isNight ? AppColors.nightDarkBlue : Colors.white,
                   filled: true,
                   enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.zero,
                     borderSide: BorderSide(
                       color: isNight
                           ? AppColors.nightLightGray
@@ -82,11 +84,13 @@ class CitySearch extends StatelessWidget {
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.zero,
                     borderSide: BorderSide(
                         color: isNight
                             ? AppColors.nightLightGray
                             : AppColors.dayDarkGray,
-                        width: 2.0),
+                        width: 2.0
+                    ),
                   ),
                 ),
               ),

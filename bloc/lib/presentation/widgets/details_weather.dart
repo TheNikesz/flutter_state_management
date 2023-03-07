@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:weather_app_bloc/domain/models/weather.dart';
 
 import '../../constants/app_colors.dart';
+import '../../constants/temperature_calculator.dart';
 
 class DetailsWeather extends StatelessWidget {
   final Weather weather;
   final bool isNight;
+  final bool isFahrenheit;
 
   const DetailsWeather({
     Key? key,
     required this.weather,
     required this.isNight,
+    required this.isFahrenheit,
   }) : super(key: key);
 
   @override
@@ -27,10 +30,10 @@ class DetailsWeather extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    '${weather.maxTemperature.toStringAsFixed(0)}°',
+                    TemperatureCalculator.getTemperatureLabel(weather.maxTemperature, isFahrenheit),
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 90,
+                        fontSize: 60,
                         color: isNight ? AppColors.nightText : AppColors.dayText,
                     ),
                   ),
@@ -58,10 +61,10 @@ class DetailsWeather extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    '${weather.minTemperature.toStringAsFixed(0)}°',
+                    TemperatureCalculator.getTemperatureLabel(weather.minTemperature, isFahrenheit),
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 90,
+                        fontSize: 60,
                         color: isNight ? AppColors.nightText : AppColors.dayText,
                     ),
                   ),

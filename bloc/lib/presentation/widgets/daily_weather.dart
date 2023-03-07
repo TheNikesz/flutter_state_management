@@ -5,16 +5,19 @@ import 'package:weather_icons/weather_icons.dart';
 
 import '../../constants/app_colors.dart';
 import '../../constants/app_icons.dart';
+import '../../constants/temperature_calculator.dart';
 import '../../domain/models/weather.dart';
 
 class DailyWeather extends StatelessWidget {
   final Weather weather;
   final bool isNight;
+  final bool isFahrenheit;
 
   const DailyWeather({
     Key? key,
     required this.weather,
     required this.isNight,
+    required this.isFahrenheit,
   }) : super(key: key);
 
   @override
@@ -69,21 +72,7 @@ class DailyWeather extends StatelessWidget {
                   Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        (() {
-                          String temperature;
-                          if (isNight) {
-                            temperature =
-                                '${weather.minTemperature.toStringAsFixed(0)}°';
-                          } else {
-                            temperature =
-                                '${weather.maxTemperature.toStringAsFixed(0)}°';
-                          }
-                          if (temperature == '-0°') {
-                            return '0°';
-                          } else {
-                            return temperature;
-                          }
-                        }()),
+                        isNight ? TemperatureCalculator.getTemperatureLabel(weather.minTemperature, isFahrenheit) : TemperatureCalculator.getTemperatureLabel(weather.maxTemperature, isFahrenheit),
                         style: TextStyle(
                           color:
                               isNight ? AppColors.nightText : AppColors.dayText,

@@ -60,12 +60,14 @@ class FavouriteCity extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: 'Enter a favourite city name',
                   hintStyle: TextStyle(
+                    height: 3.15,
                     color: isNight ? AppColors.nightText : AppColors.dayText,
                   ),
                   hoverColor: Colors.transparent,
                   fillColor: isNight ? AppColors.nightDarkBlue : Colors.white,
                   filled: true,
                   enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.zero,
                     borderSide: BorderSide(
                       color: isNight
                           ? AppColors.nightLightGray
@@ -74,6 +76,7 @@ class FavouriteCity extends StatelessWidget {
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.zero,
                     borderSide: BorderSide(
                         color: isNight
                             ? AppColors.nightLightGray

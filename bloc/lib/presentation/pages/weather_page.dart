@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weather_app_bloc/presentation/cubits/switch_cubit.dart';
+import 'package:weather_app_bloc/presentation/cubits/chart_switch_cubit.dart';
+import 'package:weather_app_bloc/presentation/cubits/settings_cubit.dart';
+import 'package:weather_app_bloc/presentation/cubits/weather_switch_cubit.dart';
 
 import '../../constants/app_colors.dart';
 import '../../data/repositories/weather_repository.dart';
@@ -25,24 +27,26 @@ class WeatherPage extends StatelessWidget {
             create: (context) => WeatherCubit(
                   weatherRepository: context.read<WeatherRepository>(),
                 )),
-        BlocProvider<SwitchCubit>(
-          create: (context) => SwitchCubit(),
+        BlocProvider<WeatherSwitchCubit>(
+          create: (context) => WeatherSwitchCubit(),
+        ),
+        BlocProvider<ChartSwitchCubit>(
+          create: (context) => ChartSwitchCubit(),
         ),
       ],
       child: BlocBuilder<WeatherCubit, WeatherState>(
         builder: (context, weatherState) {
-          return BlocBuilder<SwitchCubit, SwitchState>(
-            builder: (context, switchState) {
+          return BlocBuilder<WeatherSwitchCubit, WeatherSwitchState>(
+            builder: (context, weatherSwitchState) {
               if (weatherState is WeatherInitial) {
                 final weatherCubit = BlocProvider.of<WeatherCubit>(context);
                 weatherCubit.getWeeklyForecast('Warsaw');
               }
 
               return Scaffold(
-                backgroundColor:
-                    switchState.isNight == true
-                        ? AppColors.nightDarkBlue
-                        : Colors.white,
+                backgroundColor: weatherSwitchState.isNight == true
+                    ? AppColors.nightDarkBlue
+                    : Colors.white,
                 resizeToAvoidBottomInset: false,
                 body: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -50,33 +54,62 @@ class WeatherPage extends StatelessWidget {
                   children: [
                     if (weatherState is WeatherSuccess) ...[
                       const Spacer(),
-                      CitySearch(isNight: switchState.isNight),
+                      CitySearch(isNight: weatherSwitchState.isNight),
                       const Spacer(),
                       CityAndDate(
                           weather: weatherState.weeklyWeather.first,
-                          isNight: switchState.isNight),
+                          isNight: weatherSwitchState.isNight),
                       const Spacer(),
-                      MainWeather(
-                          weather: weatherState.weeklyWeather.first,
-                          isNight: switchState.isNight),
+                      BlocBuilder<SettingsCubit, SettingsState>(
+                        builder: (context, settingsState) {
+                          return MainWeather(
+                            weather: weatherState.weeklyWeather.first,
+                            isNight: weatherSwitchState.isNight,
+                            isFahrenheit: settingsState.isFahrenheit,
+                          );
+                        },
+                      ),
                       const Spacer(),
-                      _buildSwitches(switchState.isChart, switchState.isNight),
+                      BlocBuilder<ChartSwitchCubit, ChartSwitchState>(
+                        builder: (context, chartSwitchState) {
+                          return _buildSwitches(chartSwitchState.isChart,
+                              weatherSwitchState.isNight);
+                        },
+                      ),
                       const Spacer(),
-                      if (switchState.isChart == true) ...[
-                        WeatherChart(
-                            weeklyWeather: weatherState.weeklyWeather,
-                            isNight: switchState.isNight),
-                      ] else
-                        _buildWeeklyWeather(weatherState.weeklyWeather, switchState.isNight),
+                      BlocBuilder<ChartSwitchCubit, ChartSwitchState>(
+                        builder: (context, chartSwitchState) {
+                          if (chartSwitchState.isChart == true) {
+                            return BlocBuilder<SettingsCubit, SettingsState>(
+                              builder: (context, settingsState) {
+                                return WeatherChart(
+                                    weeklyWeather: weatherState.weeklyWeather,
+                                    isNight: weatherSwitchState.isNight,
+                                    isFahrenheit: settingsState.isFahrenheit,
+                                );
+                              },
+                            );
+                          } else {
+                            return _buildWeeklyWeather(
+                                weatherState.weeklyWeather,
+                                weatherSwitchState.isNight);
+                          }
+                        },
+                      ),
                       const Spacer(),
                     ] else if (weatherState is WeatherFailure) ...[
                       const Spacer(),
-                      _buildError(weatherState.errorMessage, switchState.isNight),
+                      _buildError(weatherState.errorMessage,
+                          weatherSwitchState.isNight),
                       const Spacer(),
                     ] else
-                      Center(child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(switchState.isNight ? AppColors.nightText : AppColors.dayText,)
-                      )),
+                      Center(
+                          child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                        weatherSwitchState.isNight
+                            ? AppColors.nightText
+                            : AppColors.dayText,
+                      ))),
                   ],
                 ),
               );
@@ -93,7 +126,7 @@ class WeatherPage extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          ChartSwitch(isNight: isNight, isGraph: isChart),
+          ChartSwitch(isNight: isNight, isChart: isChart),
           WeatherSwitch(isNight: isNight)
         ],
       ),
@@ -104,7 +137,14 @@ class WeatherPage extends StatelessWidget {
     List<Widget> dailyWeatherWidgets = [];
 
     for (var weather in weeklyWeather) {
-      dailyWeatherWidgets.add(DailyWeather(weather: weather, isNight: isNight));
+      dailyWeatherWidgets.add(BlocBuilder<SettingsCubit, SettingsState>(
+        builder: (context, settingsState) {
+          return DailyWeather(
+              weather: weather,
+              isNight: isNight,
+              isFahrenheit: settingsState.isFahrenheit);
+        },
+      ));
     }
     dailyWeatherWidgets.removeAt(0);
 

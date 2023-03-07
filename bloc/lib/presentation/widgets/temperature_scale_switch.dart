@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../constants/app_colors.dart';
+import '../cubits/settings_cubit.dart';
 
 class TemperatureScaleSwitch extends StatelessWidget {
   const TemperatureScaleSwitch({
     Key? key,
     required this.isNight,
+    required this.isFahrenheit,
   }) : super(key: key);
 
   final bool isNight;
+  final bool isFahrenheit;
 
   @override
   Widget build(BuildContext context) {
@@ -42,9 +46,10 @@ class TemperatureScaleSwitch extends StatelessWidget {
                   activeTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
                   inactiveThumbColor: isNight ? AppColors.dayDarkGray : Colors.black,
                   inactiveTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
-                  value: isNight,
+                  value: isFahrenheit,
                   onChanged: (value) {
-                    
+                    final settingsCubit = BlocProvider.of<SettingsCubit>(context);
+                    settingsCubit.changeTemperatureScaleSwitchValue(value);
                   },
                 ),
                 Text(
