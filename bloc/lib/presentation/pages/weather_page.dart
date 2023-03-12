@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:weather_app_bloc/presentation/cubits/chart_switch_cubit.dart';
 import 'package:weather_app_bloc/presentation/cubits/settings_cubit.dart';
 import 'package:weather_app_bloc/presentation/cubits/weather_switch_cubit.dart';
@@ -17,7 +18,18 @@ import '../widgets/weather_chart.dart';
 import '../widgets/weather_switch.dart';
 
 class WeatherPage extends StatelessWidget {
-  const WeatherPage({super.key});
+  final bool isFahrenheitSettings;
+  final bool isChartSettings;
+  final bool isNightSettings;
+  final String favouriteCity;
+
+  const WeatherPage({
+    Key? key,
+    required this.isFahrenheitSettings,
+    required this.isChartSettings,
+    required this.isNightSettings,
+    required this.favouriteCity,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,11 +39,11 @@ class WeatherPage extends StatelessWidget {
             create: (context) => WeatherCubit(
                   weatherRepository: context.read<WeatherRepository>(),
                 )),
-        BlocProvider<WeatherSwitchCubit>(
-          create: (context) => WeatherSwitchCubit(),
-        ),
         BlocProvider<ChartSwitchCubit>(
-          create: (context) => ChartSwitchCubit(),
+          create: (context) => ChartSwitchCubit(isChart: isChartSettings),
+        ),
+        BlocProvider<WeatherSwitchCubit>(
+          create: (context) => WeatherSwitchCubit(isNight: isNightSettings),
         ),
       ],
       child: BlocBuilder<WeatherCubit, WeatherState>(
@@ -40,7 +52,7 @@ class WeatherPage extends StatelessWidget {
             builder: (context, weatherSwitchState) {
               if (weatherState is WeatherInitial) {
                 final weatherCubit = BlocProvider.of<WeatherCubit>(context);
-                weatherCubit.getWeeklyForecast('Warsaw');
+                weatherCubit.getWeeklyForecast(favouriteCity);
               }
 
               return Scaffold(
@@ -83,9 +95,9 @@ class WeatherPage extends StatelessWidget {
                             return BlocBuilder<SettingsCubit, SettingsState>(
                               builder: (context, settingsState) {
                                 return WeatherChart(
-                                    weeklyWeather: weatherState.weeklyWeather,
-                                    isNight: weatherSwitchState.isNight,
-                                    isFahrenheit: settingsState.isFahrenheit,
+                                  weeklyWeather: weatherState.weeklyWeather,
+                                  isNight: weatherSwitchState.isNight,
+                                  isFahrenheit: settingsState.isFahrenheit,
                                 );
                               },
                             );
@@ -159,37 +171,62 @@ class WeatherPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        SizedBox(
+            height: 150,
+            child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: isNight
+                      ? AppColors.nightLightBlue
+                      : AppColors.dayLightGray,
+                  borderRadius: const BorderRadius.all(Radius.circular(10)),
+                ),
+                child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 20,
+                      right: 20,
+                    ),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 20.0, bottom: 5.0, left: 10.0, right: 10.0),
+                          child: Icon(
+                            Icons.fmd_bad_outlined,
+                            size: 50.0,
+                            color: isNight
+                                ? AppColors.nightText
+                                : AppColors.dayText,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 10.0, bottom: 2.0, left: 40.0, right: 40.0),
+                          child: Text(
+                            errorMessage,
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: isNight
+                                  ? AppColors.nightText
+                                  : AppColors.dayText,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                          child: Text(
+                            'Please enter a new city name and try again.',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: isNight
+                                  ? AppColors.nightText
+                                  : AppColors.dayText,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )))),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
-          child: Icon(
-            Icons.fmd_bad_outlined,
-            size: 50.0,
-            color: isNight ? AppColors.nightText : AppColors.dayText,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(
-              top: 10.0, bottom: 2.0, left: 40.0, right: 40.0),
-          child: Text(
-            errorMessage,
-            style: TextStyle(
-              fontSize: 15,
-              color: isNight ? AppColors.nightText : AppColors.dayText,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 40.0),
-          child: Text(
-            'Please enter a new city name and try again.',
-            style: TextStyle(
-              fontSize: 15,
-              color: isNight ? AppColors.nightText : AppColors.dayText,
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 18.0),
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
           child: CitySearch(isNight: isNight),
         ),
       ],

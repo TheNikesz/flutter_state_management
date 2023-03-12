@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'chart_switch_state.dart';
 
 class ChartSwitchCubit extends Cubit<ChartSwitchState> {
-  ChartSwitchCubit() : super(const ChartSwitchState(isChart: false));
+  ChartSwitchCubit({required bool isChart}) : super(ChartSwitchState(isChart: isChart));
 
-  void changeGraphSwitchValue(bool value) {
+  Future<void> changeGraphSwitchValue(bool value) async {
     emit(state.copyWith(
       isChart: value,
     ));

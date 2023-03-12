@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../constants/app_colors.dart';
+import '../cubits/settings_cubit.dart';
 
 class SettingsChartSwitch extends StatelessWidget {
   const SettingsChartSwitch({
     Key? key,
     required this.isNight,
+    required this.isChart,
   }) : super(key: key);
 
   final bool isNight;
+  final bool isChart;
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +43,10 @@ class SettingsChartSwitch extends StatelessWidget {
                   activeTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
                   inactiveThumbColor: isNight ? AppColors.dayDarkGray : Colors.black,
                   inactiveTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
-                  value: isNight,
+                  value: isChart,
                   onChanged: (value) {
-                    
+                    final settingsCubit = BlocProvider.of<SettingsCubit>(context);
+                    settingsCubit.changeSettingsChartSwitchValue(value);
                   },
                 ),
                 Icon(

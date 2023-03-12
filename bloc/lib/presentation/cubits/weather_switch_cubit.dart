@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'weather_switch_state.dart';
 
 class WeatherSwitchCubit extends Cubit<WeatherSwitchState> {
-  WeatherSwitchCubit() : super(const WeatherSwitchState(isNight: false));
+  WeatherSwitchCubit({required bool isNight}) : super(WeatherSwitchState(isNight: isNight));
 
-  void changeWeatherSwitchValue(bool value) {
+  Future<void> changeWeatherSwitchValue(bool value) async {
     emit(state.copyWith(
       isNight: value,
     ));

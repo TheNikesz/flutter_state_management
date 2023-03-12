@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../constants/app_colors.dart';
 import '../cubits/settings_cubit.dart';
 
-class TemperatureScaleSwitch extends StatelessWidget {
-  const TemperatureScaleSwitch({
+class SettingsTemperatureScaleSwitch extends StatelessWidget {
+  const SettingsTemperatureScaleSwitch({
     Key? key,
     required this.isNight,
     required this.isFahrenheit,
@@ -49,7 +49,7 @@ class TemperatureScaleSwitch extends StatelessWidget {
                   value: isFahrenheit,
                   onChanged: (value) {
                     final settingsCubit = BlocProvider.of<SettingsCubit>(context);
-                    settingsCubit.changeTemperatureScaleSwitchValue(value);
+                    settingsCubit.changeSettingsTemperatureScaleSwitchValue(value);
                   },
                 ),
                 Text(

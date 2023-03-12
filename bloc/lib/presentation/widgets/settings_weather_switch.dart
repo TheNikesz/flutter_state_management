@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 import '../../constants/app_colors.dart';
+import '../cubits/settings_cubit.dart';
 
 class SettingsWeatherSwitch extends StatelessWidget {
   const SettingsWeatherSwitch({
     Key? key,
-    required this.isNight,
+    required this.isNight, required this.isNightSettings,
   }) : super(key: key);
 
   final bool isNight;
+  final bool isNightSettings;
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +43,10 @@ class SettingsWeatherSwitch extends StatelessWidget {
                   activeTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
                   inactiveThumbColor: isNight ? AppColors.dayDarkGray : Colors.black,
                   inactiveTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
-                  value: isNight,
+                  value: isNightSettings,
                   onChanged: (value) {
-                    
+                    final settingsCubit = BlocProvider.of<SettingsCubit>(context);
+                    settingsCubit.changeSettingsWeatherSwitchValue(value);
                   },
                 ),
                 BoxedIcon(
