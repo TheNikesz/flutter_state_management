@@ -7,7 +7,6 @@ import 'package:weather_app_bloc/presentation/cubits/weather_switch_cubit.dart';
 
 import '../../constants/app_colors.dart';
 import '../../data/repositories/weather_repository.dart';
-import '../../domain/models/weather.dart' hide DailyWeather;
 import '../cubits/weather_cubit.dart';
 import '../widgets/chart_switch.dart';
 import '../widgets/city_and_date.dart';
@@ -102,9 +101,25 @@ class WeatherPage extends StatelessWidget {
                               },
                             );
                           } else {
-                            return _buildWeeklyWeather(
-                                weatherState.weeklyWeather,
-                                weatherSwitchState.isNight);
+                            return BlocBuilder<SettingsCubit, SettingsState>(
+                              builder: (context, settingsState) {
+                                return SizedBox(
+                                  height: 410,
+                                  child: ListView.builder(
+                                    itemCount: weatherState.weeklyWeather.skip(1).length,
+                                    itemBuilder:
+                                      (BuildContext context, int index) {
+                                        return DailyWeather(
+                                            weather: weatherState.weeklyWeather.skip(1).elementAt(index),
+                                            isNight: weatherSwitchState.isNight,
+                                            isFahrenheit:
+                                                settingsState.isFahrenheit
+                                        );
+                                      },
+                                  ),
+                                );
+                              },
+                            );
                           }
                         },
                       ),
@@ -133,36 +148,12 @@ class WeatherPage extends StatelessWidget {
   }
 
   Widget _buildSwitches(bool isChart, bool isNight) {
-    return SizedBox(
-      width: 400,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          ChartSwitch(isNight: isNight, isChart: isChart),
-          WeatherSwitch(isNight: isNight)
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWeeklyWeather(List<Weather> weeklyWeather, bool isNight) {
-    List<Widget> dailyWeatherWidgets = [];
-
-    for (var weather in weeklyWeather) {
-      dailyWeatherWidgets.add(BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, settingsState) {
-          return DailyWeather(
-              weather: weather,
-              isNight: isNight,
-              isFahrenheit: settingsState.isFahrenheit);
-        },
-      ));
-    }
-    dailyWeatherWidgets.removeAt(0);
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: dailyWeatherWidgets,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ChartSwitch(isNight: isNight, isChart: isChart),
+        WeatherSwitch(isNight: isNight)
+      ],
     );
   }
 

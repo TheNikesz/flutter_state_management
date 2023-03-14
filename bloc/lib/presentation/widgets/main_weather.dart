@@ -5,7 +5,7 @@ import 'package:weather_icons/weather_icons.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_icons.dart';
 import '../../constants/app_labels.dart';
-import '../../constants/temperature_calculator.dart';
+import '../../constants/unit_converter.dart';
 import '../pages/weather_details_page.dart';
 
 class MainWeather extends StatelessWidget {
@@ -73,16 +73,14 @@ class MainWeather extends StatelessWidget {
                   ),
                 ),
               ),
-              Center(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    isNight ? TemperatureCalculator.getTemperatureLabel(weather.minTemperature, isFahrenheit) : TemperatureCalculator.getTemperatureLabel(weather.maxTemperature, isFahrenheit),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 60,
-                      color: isNight ? AppColors.nightText : AppColors.dayText,
-                    ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  isNight ? UnitConverter.getTemperatureLabel(weather.minTemperature, isFahrenheit) : UnitConverter.getTemperatureLabel(weather.maxTemperature, isFahrenheit),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 60,
+                    color: isNight ? AppColors.nightText : AppColors.dayText,
                   ),
                 ),
               ),

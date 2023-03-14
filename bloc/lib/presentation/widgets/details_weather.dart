@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weather_app_bloc/domain/models/weather.dart';
 
 import '../../constants/app_colors.dart';
-import '../../constants/temperature_calculator.dart';
+import '../../constants/unit_converter.dart';
 
 class DetailsWeather extends StatelessWidget {
   final Weather weather;
@@ -30,7 +30,7 @@ class DetailsWeather extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    TemperatureCalculator.getTemperatureLabel(weather.maxTemperature, isFahrenheit),
+                    UnitConverter.getTemperatureLabel(weather.maxTemperature, isFahrenheit),
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 60,
@@ -61,7 +61,7 @@ class DetailsWeather extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    TemperatureCalculator.getTemperatureLabel(weather.minTemperature, isFahrenheit),
+                    UnitConverter.getTemperatureLabel(weather.minTemperature, isFahrenheit),
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 60,

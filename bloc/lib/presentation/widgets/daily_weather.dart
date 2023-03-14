@@ -5,7 +5,7 @@ import 'package:weather_icons/weather_icons.dart';
 
 import '../../constants/app_colors.dart';
 import '../../constants/app_icons.dart';
-import '../../constants/temperature_calculator.dart';
+import '../../constants/unit_converter.dart';
 import '../../domain/models/weather.dart';
 
 class DailyWeather extends StatelessWidget {
@@ -72,7 +72,7 @@ class DailyWeather extends StatelessWidget {
                   Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        isNight ? TemperatureCalculator.getTemperatureLabel(weather.minTemperature, isFahrenheit) : TemperatureCalculator.getTemperatureLabel(weather.maxTemperature, isFahrenheit),
+                        isNight ? UnitConverter.getTemperatureLabel(weather.minTemperature, isFahrenheit) : UnitConverter.getTemperatureLabel(weather.maxTemperature, isFahrenheit),
                         style: TextStyle(
                           color:
                               isNight ? AppColors.nightText : AppColors.dayText,

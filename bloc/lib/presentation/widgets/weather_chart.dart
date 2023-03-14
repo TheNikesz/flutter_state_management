@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 import 'package:intl/intl.dart';
-import 'package:weather_app_bloc/constants/temperature_calculator.dart';
+import 'package:weather_app_bloc/constants/unit_converter.dart';
 
 import '../../constants/app_colors.dart';
 import '../../domain/models/weather.dart';
@@ -25,8 +25,8 @@ class WeatherChart extends StatelessWidget {
     List<String> dates = [];
 
     for (var i = 0; i < weeklyWeather.length; i++) {
-      maxTemperatures.add(TemperatureCalculator.getTemperature(weeklyWeather.elementAt(i).maxTemperature, isFahrenheit));
-      minTemperatures.add(TemperatureCalculator.getTemperature(weeklyWeather.elementAt(i).minTemperature, isFahrenheit));
+      maxTemperatures.add(UnitConverter.getTemperature(weeklyWeather.elementAt(i).maxTemperature, isFahrenheit));
+      minTemperatures.add(UnitConverter.getTemperature(weeklyWeather.elementAt(i).minTemperature, isFahrenheit));
       dates.add(DateFormat('dd/MM').format(DateTime.parse(weeklyWeather.elementAt(i).date)));
     }
 
