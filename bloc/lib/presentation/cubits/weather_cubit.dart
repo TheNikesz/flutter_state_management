@@ -25,20 +25,4 @@ class WeatherCubit extends Cubit<WeatherState> {
       emit(const WeatherFailure('Error! Couldn\'t fetch the weather for that city.'));
     }
   }
-
-  void changeGraphSwitchValue(bool value) {
-    if (state is WeatherSuccess) {
-      emit((state as WeatherSuccess).copyWith(
-        isChart: value,
-      ));
-    }
-  }
-
-  void changeWeatherSwitchValue(bool value) {
-    if (state is WeatherSuccess) {
-      emit((state as WeatherSuccess).copyWith(
-        isNight: value,
-      ));
-    }
-  }
 }

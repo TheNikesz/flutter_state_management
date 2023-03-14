@@ -5,16 +5,19 @@ import 'package:weather_icons/weather_icons.dart';
 import '../../constants/app_colors.dart';
 import '../../constants/app_icons.dart';
 import '../../constants/app_labels.dart';
+import '../../constants/unit_converter.dart';
 import '../pages/weather_details_page.dart';
 
 class MainWeather extends StatelessWidget {
   final Weather weather;
   final bool isNight;
+  final bool isFahrenheit;
 
   const MainWeather({
     Key? key,
     required this.weather,
     required this.isNight,
+    required this.isFahrenheit,
   }) : super(key: key);
 
   @override
@@ -35,7 +38,7 @@ class MainWeather extends StatelessWidget {
                       )));
         },
         child: SizedBox(
-          width: 350.0,
+          width: 360.0,
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -46,7 +49,7 @@ class MainWeather extends StatelessWidget {
                     padding: const EdgeInsets.all(6.0),
                     child: BoxedIcon(
                       AppIcons.getWeatherIcon(weather.weatherCode, isNight),
-                      color: isNight ? Colors.white : Colors.black,
+                      color: isNight ? AppColors.nightText : AppColors.dayText,
                       size: 80.0,
                     ),
                   ),
@@ -73,12 +76,10 @@ class MainWeather extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  isNight
-                      ? '${weather.minTemperature.toStringAsFixed(0)}°'
-                      : '${weather.maxTemperature.toStringAsFixed(0)}°',
+                  isNight ? UnitConverter.getTemperatureLabel(weather.minTemperature, isFahrenheit) : UnitConverter.getTemperatureLabel(weather.maxTemperature, isFahrenheit),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 90,
+                    fontSize: 60,
                     color: isNight ? AppColors.nightText : AppColors.dayText,
                   ),
                 ),

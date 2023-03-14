@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../constants/app_colors.dart';
-import '../cubits/weather_cubit.dart';
+import '../cubits/chart_switch_cubit.dart';
 
 class ChartSwitch extends StatelessWidget {
   final bool isNight;
-  final bool isGraph;
+  final bool isChart;
 
   const ChartSwitch({
     Key? key,
     required this.isNight,
-    required this.isGraph,
+    required this.isChart,
   }) : super(key: key);
 
   @override
@@ -29,10 +29,10 @@ class ChartSwitch extends StatelessWidget {
           activeTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
           inactiveThumbColor: isNight ? AppColors.dayDarkGray : Colors.black,
           inactiveTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
-          value: isGraph,
+          value: isChart,
           onChanged: (value) {
-            final weatherCubit = BlocProvider.of<WeatherCubit>(context);
-            weatherCubit.changeGraphSwitchValue(value);
+            final switchCubit = BlocProvider.of<ChartSwitchCubit>(context);
+            switchCubit.changeGraphSwitchValue(value);
           },
         ),
         Icon(

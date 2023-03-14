@@ -5,16 +5,19 @@ import 'package:weather_icons/weather_icons.dart';
 
 import '../../constants/app_colors.dart';
 import '../../constants/app_icons.dart';
+import '../../constants/unit_converter.dart';
 import '../../domain/models/weather.dart';
 
 class DailyWeather extends StatelessWidget {
   final Weather weather;
   final bool isNight;
+  final bool isFahrenheit;
 
   const DailyWeather({
     Key? key,
     required this.weather,
     required this.isNight,
+    required this.isFahrenheit,
   }) : super(key: key);
 
   @override
@@ -28,11 +31,18 @@ class DailyWeather extends StatelessWidget {
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => WeatherDetailsPage(weather: weather, isNight: isNight,)));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => WeatherDetailsPage(
+                          weather: weather,
+                          isNight: isNight,
+                        )));
           },
-          child:  DecoratedBox(
+          child: DecoratedBox(
             decoration: BoxDecoration(
-              color: isNight ? AppColors.nightLightBlue : AppColors.dayLightGray,
+              color:
+                  isNight ? AppColors.nightLightBlue : AppColors.dayLightGray,
               borderRadius: const BorderRadius.all(Radius.circular(10)),
             ),
             child: Padding(
@@ -47,28 +57,27 @@ class DailyWeather extends StatelessWidget {
                     child: Text(
                       DateFormat('EEEE').format(DateTime.parse(weather.date)),
                       style: TextStyle(
-                        color: isNight ? AppColors.nightText : AppColors.dayText,
+                        color:
+                            isNight ? AppColors.nightText : AppColors.dayText,
                       ),
                     ),
                   ),
                   Center(
                     child: BoxedIcon(
-                      AppIcons.getWeatherIcon(
-                        weather.weatherCode, isNight
-                      ),
+                      AppIcons.getWeatherIcon(weather.weatherCode, isNight),
                       size: 20.0,
                       color: isNight ? Colors.white : Colors.black,
                     ),
                   ),
                   Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      isNight ? '${weather.minTemperature.toStringAsFixed(0)}°' : '${weather.maxTemperature.toStringAsFixed(0)}°',
-                      style: TextStyle(
-                        color: isNight ? AppColors.nightText : AppColors.dayText,
-                      ),
-                    )
-                  )
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        isNight ? UnitConverter.getTemperatureLabel(weather.minTemperature, isFahrenheit) : UnitConverter.getTemperatureLabel(weather.maxTemperature, isFahrenheit),
+                        style: TextStyle(
+                          color:
+                              isNight ? AppColors.nightText : AppColors.dayText,
+                        ),
+                      ))
                 ],
               ),
             ),
