@@ -6,12 +6,12 @@ import '../controllers/providers.dart';
 
 class ChartSwitch extends ConsumerWidget {
   final bool isNight;
-  final bool isGraph;
+  final bool isChart;
 
   const ChartSwitch({
     Key? key,
     required this.isNight,
-    required this.isGraph,
+    required this.isChart,
   }) : super(key: key);
 
   @override
@@ -29,8 +29,8 @@ class ChartSwitch extends ConsumerWidget {
           activeTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
           inactiveThumbColor: isNight ? AppColors.dayDarkGray : Colors.black,
           inactiveTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
-          value: isGraph,
-          onChanged: (value) => ref.read(switchProvider.notifier).state = ref.read(switchProvider.notifier).state.copyWith(isChart: value),
+          value: isChart,
+          onChanged: (value) => ref.read(chartSwitchProvider.notifier).state = value
         ),
         Icon(
           Icons.show_chart,

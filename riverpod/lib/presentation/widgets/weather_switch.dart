@@ -29,7 +29,7 @@ class WeatherSwitch extends ConsumerWidget {
           inactiveThumbColor: Colors.black,
           inactiveTrackColor: Colors.black87,
           value: isNight,
-          onChanged: (value) => ref.read(switchProvider.notifier).state = ref.read(switchProvider.notifier).state.copyWith(isNight: value),
+          onChanged: (value) => ref.read(weatherSwitchProvider.notifier).state = value
         ),
         BoxedIcon(
           WeatherIcons.night_clear,
