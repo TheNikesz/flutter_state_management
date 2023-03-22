@@ -6,7 +6,6 @@ import 'package:weather_app_bloc/presentation/cubits/settings_cubit.dart';
 import 'package:weather_app_bloc/presentation/cubits/weather_switch_cubit.dart';
 
 import '../../constants/app_colors.dart';
-import '../../data/repositories/weather_repository.dart';
 import '../cubits/weather_cubit.dart';
 import '../widgets/chart_switch.dart';
 import '../widgets/city_and_date.dart';
@@ -17,133 +16,113 @@ import '../widgets/weather_chart.dart';
 import '../widgets/weather_switch.dart';
 
 class WeatherPage extends StatelessWidget {
-  final bool isFahrenheitSettings;
-  final bool isChartSettings;
-  final bool isNightSettings;
   final String favouriteCity;
 
   const WeatherPage({
     Key? key,
-    required this.isFahrenheitSettings,
-    required this.isChartSettings,
-    required this.isNightSettings,
     required this.favouriteCity,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<WeatherCubit>(
-            create: (context) => WeatherCubit(
-                  weatherRepository: context.read<WeatherRepository>(),
-                )),
-        BlocProvider<ChartSwitchCubit>(
-          create: (context) => ChartSwitchCubit(isChart: isChartSettings),
-        ),
-        BlocProvider<WeatherSwitchCubit>(
-          create: (context) => WeatherSwitchCubit(isNight: isNightSettings),
-        ),
-      ],
-      child: BlocBuilder<WeatherCubit, WeatherState>(
-        builder: (context, weatherState) {
-          return BlocBuilder<WeatherSwitchCubit, WeatherSwitchState>(
-            builder: (context, weatherSwitchState) {
-              if (weatherState is WeatherInitial) {
-                final weatherCubit = BlocProvider.of<WeatherCubit>(context);
-                weatherCubit.getWeeklyForecast(favouriteCity);
-              }
+    return BlocBuilder<WeatherCubit, WeatherState>(
+      builder: (context, weatherState) {
+        return BlocBuilder<WeatherSwitchCubit, WeatherSwitchState>(
+          builder: (context, weatherSwitchState) {
+            if (weatherState is WeatherInitial) {
+              final weatherCubit = BlocProvider.of<WeatherCubit>(context);
+              weatherCubit.getWeeklyForecast(favouriteCity);
+            }
 
-              return Scaffold(
-                backgroundColor: weatherSwitchState.isNight == true
-                    ? AppColors.nightDarkBlue
-                    : Colors.white,
-                resizeToAvoidBottomInset: false,
-                body: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (weatherState is WeatherSuccess) ...[
-                      const Spacer(),
-                      CitySearch(isNight: weatherSwitchState.isNight),
-                      const Spacer(),
-                      CityAndDate(
+            return Scaffold(
+              backgroundColor: weatherSwitchState.isNight == true
+                  ? AppColors.nightDarkBlue
+                  : Colors.white,
+              resizeToAvoidBottomInset: false,
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (weatherState is WeatherSuccess) ...[
+                    const Spacer(),
+                    CitySearch(isNight: weatherSwitchState.isNight),
+                    const Spacer(),
+                    CityAndDate(
+                        weather: weatherState.weeklyWeather.first,
+                        isNight: weatherSwitchState.isNight),
+                    const Spacer(),
+                    BlocBuilder<SettingsCubit, SettingsState>(
+                      builder: (context, settingsState) {
+                        return MainWeather(
                           weather: weatherState.weeklyWeather.first,
-                          isNight: weatherSwitchState.isNight),
-                      const Spacer(),
-                      BlocBuilder<SettingsCubit, SettingsState>(
-                        builder: (context, settingsState) {
-                          return MainWeather(
-                            weather: weatherState.weeklyWeather.first,
-                            isNight: weatherSwitchState.isNight,
-                            isFahrenheit: settingsState.isFahrenheit,
+                          isNight: weatherSwitchState.isNight,
+                          isFahrenheit: settingsState.isFahrenheit,
+                        );
+                      },
+                    ),
+                    const Spacer(),
+                    BlocBuilder<ChartSwitchCubit, ChartSwitchState>(
+                      builder: (context, chartSwitchState) {
+                        return _buildSwitches(chartSwitchState.isChart,
+                            weatherSwitchState.isNight);
+                      },
+                    ),
+                    const Spacer(),
+                    BlocBuilder<ChartSwitchCubit, ChartSwitchState>(
+                      builder: (context, chartSwitchState) {
+                        if (chartSwitchState.isChart == true) {
+                          return BlocBuilder<SettingsCubit, SettingsState>(
+                            builder: (context, settingsState) {
+                              return WeatherChart(
+                                weeklyWeather: weatherState.weeklyWeather,
+                                isNight: weatherSwitchState.isNight,
+                                isFahrenheit: settingsState.isFahrenheit,
+                              );
+                            },
                           );
-                        },
-                      ),
-                      const Spacer(),
-                      BlocBuilder<ChartSwitchCubit, ChartSwitchState>(
-                        builder: (context, chartSwitchState) {
-                          return _buildSwitches(chartSwitchState.isChart,
-                              weatherSwitchState.isNight);
-                        },
-                      ),
-                      const Spacer(),
-                      BlocBuilder<ChartSwitchCubit, ChartSwitchState>(
-                        builder: (context, chartSwitchState) {
-                          if (chartSwitchState.isChart == true) {
-                            return BlocBuilder<SettingsCubit, SettingsState>(
-                              builder: (context, settingsState) {
-                                return WeatherChart(
-                                  weeklyWeather: weatherState.weeklyWeather,
-                                  isNight: weatherSwitchState.isNight,
-                                  isFahrenheit: settingsState.isFahrenheit,
-                                );
-                              },
-                            );
-                          } else {
-                            return BlocBuilder<SettingsCubit, SettingsState>(
-                              builder: (context, settingsState) {
-                                return SizedBox(
-                                  height: 410,
-                                  child: ListView.builder(
-                                    itemCount: weatherState.weeklyWeather.skip(1).length,
-                                    itemBuilder:
-                                      (BuildContext context, int index) {
-                                        return DailyWeather(
-                                            weather: weatherState.weeklyWeather.skip(1).elementAt(index),
-                                            isNight: weatherSwitchState.isNight,
-                                            isFahrenheit:
-                                                settingsState.isFahrenheit
-                                        );
-                                      },
-                                  ),
-                                );
-                              },
-                            );
-                          }
-                        },
-                      ),
-                      const Spacer(),
-                    ] else if (weatherState is WeatherFailure) ...[
-                      const Spacer(),
-                      _buildError(weatherState.errorMessage,
-                          weatherSwitchState.isNight),
-                      const Spacer(),
-                    ] else
-                      Center(
-                          child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                        weatherSwitchState.isNight
-                            ? AppColors.nightText
-                            : AppColors.dayText,
-                      ))),
-                  ],
-                ),
-              );
-            },
-          );
-        },
-      ),
+                        } else {
+                          return BlocBuilder<SettingsCubit, SettingsState>(
+                            builder: (context, settingsState) {
+                              return SizedBox(
+                                height: 410,
+                                child: ListView.builder(
+                                  itemCount: weatherState.weeklyWeather.skip(1).length,
+                                  itemBuilder:
+                                    (BuildContext context, int index) {
+                                      return DailyWeather(
+                                          weather: weatherState.weeklyWeather.skip(1).elementAt(index),
+                                          isNight: weatherSwitchState.isNight,
+                                          isFahrenheit:
+                                              settingsState.isFahrenheit
+                                      );
+                                    },
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
+                    ),
+                    const Spacer(),
+                  ] else if (weatherState is WeatherFailure) ...[
+                    const Spacer(),
+                    _buildError(weatherState.errorMessage,
+                        weatherSwitchState.isNight),
+                    const Spacer(),
+                  ] else
+                    Center(
+                        child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                      weatherSwitchState.isNight
+                          ? AppColors.nightText
+                          : AppColors.dayText,
+                    ))),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
