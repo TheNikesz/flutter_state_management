@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:weather_app_bloc/data/data_sources/api.dart';
 import 'package:weather_app_bloc/presentation/cubits/settings_cubit.dart';
 import 'package:weather_app_bloc/presentation/cubits/shared_preferences_cubit.dart';
 import 'package:weather_app_bloc/presentation/pages/weather_page.dart';
@@ -25,7 +26,10 @@ class WeatherApp extends StatelessWidget {
       child: BlocBuilder<SharedPreferencesCubit, SharedPreferencesState>(
           builder: (context, sharedPreferencesState) {
         return RepositoryProvider(
-          create: (context) => WeatherRepository(),
+          create: (context) => WeatherRepository(
+              geocodingApi: GeocodingApiMock(),
+              weatherForecastApi: WeatherForecastApiMock()),
+          // create: (context) => WeatherRepository(),
           child: BlocProvider<SettingsCubit>(
             create: (context) =>
                 sharedPreferencesState is SharedPreferencesSuccess
@@ -46,8 +50,8 @@ class WeatherApp extends StatelessWidget {
                       isFahrenheitSettings: sharedPreferencesState.isFahrenheit,
                       isChartSettings: sharedPreferencesState.isChart,
                       isNightSettings: sharedPreferencesState.isNight,
-                      favouriteCity:  sharedPreferencesState.favouriteCity,
-                      )
+                      favouriteCity: sharedPreferencesState.favouriteCity,
+                    )
                   : const CircularProgressIndicator(),
             ),
           ),
