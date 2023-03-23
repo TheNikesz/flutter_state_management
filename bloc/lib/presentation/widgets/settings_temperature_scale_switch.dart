@@ -41,6 +41,7 @@ class SettingsTemperatureScaleSwitch extends StatelessWidget {
                   ),
                 ),
                 Switch(
+                  key: const Key('SettingsTemperatureScaleSwitch'),
                   hoverColor: Colors.transparent,
                   activeColor: isNight ? AppColors.dayDarkGray : Colors.black,
                   activeTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,

@@ -23,6 +23,7 @@ class WeatherSwitch extends StatelessWidget {
           color: isNight ? Colors.white : Colors.black,
         ),
         Switch(
+          key: const Key('WeatherSwitch'),
           hoverColor: Colors.transparent,
           activeColor: AppColors.dayDarkGray,
           activeTrackColor: AppColors.dayLightGray,
