@@ -16,11 +16,8 @@ import '../widgets/weather_chart.dart';
 import '../widgets/weather_switch.dart';
 
 class WeatherPage extends StatelessWidget {
-  final String favouriteCity;
-
   const WeatherPage({
     Key? key,
-    required this.favouriteCity,
   }) : super(key: key);
 
   @override
@@ -31,7 +28,7 @@ class WeatherPage extends StatelessWidget {
           builder: (context, weatherSwitchState) {
             if (weatherState is WeatherInitial) {
               final weatherCubit = BlocProvider.of<WeatherCubit>(context);
-              weatherCubit.getWeeklyForecast(favouriteCity);
+              weatherCubit.getWeeklyForecast(weatherState.favouriteCity);
             }
 
             return Scaffold(

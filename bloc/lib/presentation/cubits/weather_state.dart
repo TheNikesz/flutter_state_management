@@ -6,7 +6,9 @@ abstract class WeatherState {
 }
 
 class WeatherInitial extends WeatherState {
-  const WeatherInitial();
+  final String favouriteCity;
+  
+  const WeatherInitial({required this.favouriteCity});
 }
 
 class WeatherLoading extends WeatherState {

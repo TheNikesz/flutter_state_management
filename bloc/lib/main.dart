@@ -27,45 +27,45 @@ class WeatherApp extends StatelessWidget {
           SharedPreferencesCubit()..getSettingsFromSharedPreferences(),
       child: BlocBuilder<SharedPreferencesCubit, SharedPreferencesState>(
           builder: (context, sharedPreferencesState) {
-        return RepositoryProvider(
-          create: (context) => WeatherRepository(),
-          child: MultiBlocProvider(
-            providers: [
-              BlocProvider<SettingsCubit>(
-                create: (context) =>
-                  sharedPreferencesState is SharedPreferencesSuccess
-                      ? SettingsCubit(
-                          isFahrenheit: sharedPreferencesState.isFahrenheit,
-                          isChart: sharedPreferencesState.isChart,
-                          isNight: sharedPreferencesState.isNight)
-                      : SettingsCubit(
-                          isFahrenheit: false, isChart: false, isNight: false),
-              ),
-              BlocProvider<WeatherCubit>(
-                  create: (context) => WeatherCubit(
-                        weatherRepository: context.read<WeatherRepository>(),
-                      )),
-              BlocProvider<ChartSwitchCubit>(
-                create: (context) => sharedPreferencesState is SharedPreferencesSuccess ? ChartSwitchCubit(isChart: sharedPreferencesState.isChart) : ChartSwitchCubit(isChart: false),
-              ),
-              BlocProvider<WeatherSwitchCubit>(
-                create: (context) => sharedPreferencesState is SharedPreferencesSuccess ? WeatherSwitchCubit(isNight: sharedPreferencesState.isNight) : WeatherSwitchCubit(isNight: false),
-              ),
-            ],
-          child: MaterialApp(
-              title: 'Weather App (Bloc)',
-              theme: ThemeData(
-                textTheme: GoogleFonts.montserratTextTheme(),
-                scaffoldBackgroundColor: Colors.white,
-              ),
-              home: sharedPreferencesState is SharedPreferencesSuccess
-                  ? WeatherPage(
-                      favouriteCity:  sharedPreferencesState.favouriteCity,
-                      )
-                  : const CircularProgressIndicator(),
-            ),
-          ),
-        );
+            if (sharedPreferencesState is SharedPreferencesSuccess) {
+              return RepositoryProvider(
+                create: (context) => WeatherRepository(),
+                child: MultiBlocProvider(
+                  providers: [
+                    BlocProvider<SettingsCubit>(
+                      create: (context) =>
+                          SettingsCubit(
+                                  isFahrenheit: sharedPreferencesState.isFahrenheit,
+                                  isChart: sharedPreferencesState.isChart,
+                                  isNight: sharedPreferencesState.isNight),
+                    ),
+                    BlocProvider<WeatherCubit>(
+                        create: (context) => WeatherCubit(
+                                weatherRepository: context.read<WeatherRepository>(),
+                                favouriteCity: sharedPreferencesState.favouriteCity,
+                              )
+                    ),
+                    BlocProvider<ChartSwitchCubit>(
+                      create: (context) => ChartSwitchCubit(isChart: sharedPreferencesState.isChart)
+                    ),
+                    BlocProvider<WeatherSwitchCubit>(
+                      create: (context) => WeatherSwitchCubit(
+                                  isNight: sharedPreferencesState.isNight)
+                    ),
+                  ],
+                  child: MaterialApp(
+                    title: 'Weather App (Bloc)',
+                    theme: ThemeData(
+                      textTheme: GoogleFonts.montserratTextTheme(),
+                      scaffoldBackgroundColor: Colors.white,
+                    ),
+                    home: const WeatherPage(),
+                  ),
+                ),
+              );
+            } else {
+              return const CircularProgressIndicator();
+            }        
       }),
     );
   }
