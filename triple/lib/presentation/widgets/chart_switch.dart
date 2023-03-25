@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app_triple/constants/app_colors.dart';
 import 'package:weather_app_triple/main.dart';
-import 'package:weather_app_triple/presentation/triple/switch_store.dart';
+import 'package:weather_app_triple/presentation/triple/chart_switch_store.dart';
+
+import '../../constants/app_colors.dart';
 
 class ChartSwitch extends StatelessWidget {
   final bool isNight;
-  final bool isGraph;
+  final bool isChart;
 
   const ChartSwitch({
     Key? key,
     required this.isNight,
-    required this.isGraph,
+    required this.isChart,
   }) : super(key: key);
 
   @override
@@ -28,9 +29,9 @@ class ChartSwitch extends StatelessWidget {
           activeTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
           inactiveThumbColor: isNight ? AppColors.dayDarkGray : Colors.black,
           inactiveTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
-          value: isGraph,
+          value: isChart,
           onChanged: (value) {
-            getIt<SwitchStore>().changeGraphSwitchValue(value);
+            getIt<ChartSwitchStore>().changeGraphSwitchValue(value);
           },
         ),
         Icon(

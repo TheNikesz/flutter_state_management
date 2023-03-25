@@ -1,140 +1,189 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_triple/flutter_triple.dart';
-import 'package:weather_app_triple/constants/app_colors.dart';
 import 'package:weather_app_triple/domain/models/weather.dart'
     hide DailyWeather;
 import 'package:weather_app_triple/main.dart';
-import 'package:weather_app_triple/presentation/triple/switch_store.dart';
+import 'package:weather_app_triple/presentation/triple/chart_switch_store.dart';
+import 'package:weather_app_triple/presentation/triple/settings_state.dart';
+import 'package:weather_app_triple/presentation/triple/settings_store.dart';
 import 'package:weather_app_triple/presentation/triple/weather_store.dart';
-import 'package:weather_app_triple/presentation/triple/switch_state.dart';
-import 'package:weather_app_triple/presentation/widgets/chart_switch.dart';
-import 'package:weather_app_triple/presentation/widgets/city_and_date.dart';
-import 'package:weather_app_triple/presentation/widgets/city_search.dart';
-import 'package:weather_app_triple/presentation/widgets/daily_weather.dart';
-import 'package:weather_app_triple/presentation/widgets/main_weather.dart';
-import 'package:weather_app_triple/presentation/widgets/weather_chart.dart';
-import 'package:weather_app_triple/presentation/widgets/weather_switch.dart';
+
+import 'package:weather_app_triple/presentation/triple/weather_switch_store.dart';
+
+import '../../constants/app_colors.dart';
+import '../widgets/chart_switch.dart';
+import '../widgets/city_and_date.dart';
+import '../widgets/city_search.dart';
+import '../widgets/daily_weather.dart';
+import '../widgets/main_weather.dart';
+import '../widgets/weather_chart.dart';
+import '../widgets/weather_switch.dart';
 
 class WeatherPage extends StatelessWidget {
-  WeatherPage({super.key});
-
-  final WeatherStore weatherStore = getIt<WeatherStore>();
-  final SwitchStore switchStore = getIt<SwitchStore>();
+  const WeatherPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ScopedBuilder<SwitchStore, Exception, SwitchState>(
-        store: switchStore,
-        onState: (context, switchState) {
-          return Scaffold(
-            backgroundColor: switchState.isNight == true
-                ? AppColors.nightDarkBlue
-                : Colors.white,
-            resizeToAvoidBottomInset: false,
-            body: ScopedBuilder<WeatherStore, Exception, List<Weather>>(
-              store: weatherStore,
-              onState: (context, state) => Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Spacer(
-                    flex: 4,
-                  ),
-                  CitySearch(isNight: switchState.isNight),
-                  const Spacer(),
-                  CityAndDate(
-                      weather: state.first, isNight: switchState.isNight),
-                  const Spacer(),
-                  MainWeather(
-                      weather: state.first, isNight: switchState.isNight),
-                  const Spacer(),
-                  _buildSwitches(switchState.isChart, switchState.isNight),
-                  const Spacer(),
-                  if (switchState.isChart == true) ...[
-                    WeatherChart(
-                        weeklyWeather: state, isNight: switchState.isNight),
-                  ] else
-                    _buildWeeklyWeather(state, switchState.isNight),
-                  const Spacer(),
-                ],
-              ),
-              onError: (context, error) => Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Spacer(),
-                  _buildError("$error"),
-                  const Spacer(),
-                ],
-              ),
-              onLoading: (context) =>
-                  const Center(child: CircularProgressIndicator()),
-            ),
-          );
-        });
-  }
+    final chartSwitchStore = getIt<ChartSwitchStore>();
 
-  Widget _buildSwitches(bool isChart, bool isNight) {
-    return SizedBox(
-      width: 400,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          ChartSwitch(isNight: isNight, isGraph: isChart),
-          WeatherSwitch(isNight: isNight)
-        ],
+    return ScopedBuilder<WeatherSwitchStore, bool>(
+      store: getIt<WeatherSwitchStore>(),
+      onState: (context, weatherSwitchState) => Scaffold(
+        backgroundColor:
+            weatherSwitchState == true ? AppColors.nightDarkBlue : Colors.white,
+        resizeToAvoidBottomInset: false,
+        body: ScopedBuilder<WeatherStore, List<Weather>>(
+          store: getIt<WeatherStore>(),
+          onError: (context, error) => Column(
+            children: [
+              const Spacer(),
+              _buildError(error, weatherSwitchState),
+              const Spacer(),
+            ],
+          ),
+          onLoading: (context) => _buildLoading(weatherSwitchState),
+          onState: (context, weatherState) =>
+              ScopedBuilder<SettingsStore, SettingsState>(
+            store: getIt<SettingsStore>(),
+            onState: (context, settingsState) => Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Spacer(),
+                CitySearch(isNight: weatherSwitchState),
+                const Spacer(),
+                CityAndDate(
+                    weather: weatherState.first, isNight: weatherSwitchState),
+                const Spacer(),
+                MainWeather(
+                  weather: weatherState.first,
+                  isNight: weatherSwitchState,
+                  isFahrenheit: settingsState.isFahrenheit,
+                ),
+                const Spacer(),
+                ScopedBuilder<ChartSwitchStore, bool>(
+                  store: chartSwitchStore,
+                  onState: (context, chartSwitchState) {
+                    return _buildSwitches(chartSwitchState, weatherSwitchState);
+                  },
+                ),
+                const Spacer(),
+                ScopedBuilder<ChartSwitchStore, bool>(
+                    store: chartSwitchStore,
+                    onState: (context, chartSwitchState) {
+                      if (chartSwitchState == true) {
+                        return WeatherChart(
+                          weeklyWeather: weatherState,
+                          isNight: weatherSwitchState,
+                          isFahrenheit: settingsState.isFahrenheit,
+                        );
+                      } else {
+                        return SizedBox(
+                          height: 410,
+                          child: ListView.builder(
+                            itemCount: weatherState.skip(1).length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return DailyWeather(
+                                  weather:
+                                      weatherState.skip(1).elementAt(index),
+                                  isNight: weatherSwitchState,
+                                  isFahrenheit: settingsState.isFahrenheit);
+                            },
+                          ),
+                        );
+                      }
+                    }),
+                const Spacer(),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildWeeklyWeather(List<Weather> weeklyWeather, bool isNight) {
-    List<Widget> dailyWeatherWidgets = [];
-
-    for (var weather in weeklyWeather) {
-      dailyWeatherWidgets.add(DailyWeather(weather: weather, isNight: isNight));
-    }
-    dailyWeatherWidgets.removeAt(0);
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: dailyWeatherWidgets,
+  Widget _buildSwitches(bool isChart, bool isNight) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ChartSwitch(isNight: isNight, isChart: isChart),
+        WeatherSwitch(isNight: isNight)
+      ],
     );
   }
 
-  Widget _buildError(String state) {
+  Widget _buildLoading(bool isNight) {
+    return Center(
+      child: CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(
+          isNight ? AppColors.nightText : AppColors.dayText,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildError(String errorMessage, bool isNight) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 10.0),
-          child: Icon(
-            Icons.fmd_bad_outlined,
-            size: 50.0,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(
-              top: 10.0, bottom: 2.0, left: 40.0, right: 40.0),
-          child: Text(
-            state,
-            style: const TextStyle(
-              fontSize: 15,
+        SizedBox(
+          height: 150,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color:
+                  isNight ? AppColors.nightLightBlue : AppColors.dayLightGray,
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                left: 20,
+                right: 20,
+              ),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 20.0, bottom: 5.0, left: 10.0, right: 10.0),
+                    child: Icon(
+                      Icons.fmd_bad_outlined,
+                      size: 50.0,
+                      color: isNight ? AppColors.nightText : AppColors.dayText,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        top: 10.0, bottom: 2.0, left: 40.0, right: 40.0),
+                    child: Text(
+                      errorMessage,
+                      style: TextStyle(
+                        fontSize: 15,
+                        color:
+                            isNight ? AppColors.nightText : AppColors.dayText,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                    child: Text(
+                      'Please enter a new city name and try again.',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color:
+                            isNight ? AppColors.nightText : AppColors.dayText,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 40.0),
-          child: Text(
-            'Please enter a new city name and try again.',
-            style: TextStyle(
-              fontSize: 15,
-            ),
-          ),
-        ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 18.0),
-          child: CitySearch(isNight: false),
+          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          child: CitySearch(isNight: isNight),
         ),
       ],
     );

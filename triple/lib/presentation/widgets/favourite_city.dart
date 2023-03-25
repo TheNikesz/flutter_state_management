@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app_triple/presentation/triple/weather_store.dart';
+import 'package:weather_app_triple/presentation/triple/settings_store.dart';
 
 import '../../constants/app_colors.dart';
 import '../../main.dart';
-import '../pages/weather_settings_page.dart';
 
-class CitySearch extends StatelessWidget {
-  final TextEditingController _citySearchController;
+class FavouriteCity extends StatelessWidget {
+  final TextEditingController _favouriteCityController;
   final bool isNight;
 
-  CitySearch({
+  FavouriteCity({
     Key? key,
     required this.isNight,
-  })  : _citySearchController = TextEditingController(),
+  })  : _favouriteCityController = TextEditingController(),
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 50.0),
+      padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -42,31 +41,26 @@ class CitySearch extends StatelessWidget {
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: Icon(
-                    Icons.settings_outlined,
+                    Icons.arrow_back,
                     color: isNight ? AppColors.nightText : AppColors.dayText,
                   )),
             ),
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => WeatherSettingsPage(
-                            isNight: isNight,
-                          )));
+              Navigator.pop(context);
             },
           ),
           Expanded(
             child: SizedBox(
               height: 50,
               child: TextField(
-                controller: _citySearchController,
+                controller: _favouriteCityController,
                 style: TextStyle(
                   color: isNight ? AppColors.nightText : AppColors.dayText,
                 ),
                 textAlign: TextAlign.center,
                 cursorColor: isNight ? AppColors.nightText : AppColors.dayText,
                 decoration: InputDecoration(
-                  hintText: 'Enter a city name',
+                  hintText: 'Enter a favourite city name',
                   hintStyle: TextStyle(
                     height: 3.15,
                     color: isNight ? AppColors.nightText : AppColors.dayText,
@@ -115,13 +109,31 @@ class CitySearch extends StatelessWidget {
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: Icon(
-                    Icons.search,
+                    Icons.done,
                     color: isNight ? AppColors.nightText : AppColors.dayText,
                   )),
             ),
             onTap: () {
-              getIt<WeatherStore>()
-                  .getWeeklyForecast(_citySearchController.text);
+              getIt<SettingsStore>()
+                  .changeSettingsFavouriteCity(_favouriteCityController.text);
+
+              final snackBar = SnackBar(
+                content: Text(
+                  'Favourite city was changed to: ${_favouriteCityController.text}',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: isNight ? AppColors.nightText : AppColors.dayText,
+                  ),
+                ),
+                backgroundColor:
+                    isNight ? AppColors.nightLightBlue : AppColors.dayLightGray,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)),
+                ),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
             },
           )
         ],
