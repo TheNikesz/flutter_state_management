@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app_inherited_widget/presentation/state/weather_switch_state_widget.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 import '../../constants/app_colors.dart';
-import '../state/weather_state_widget.dart';
 
 class WeatherSwitch extends StatelessWidget {
   final bool isNight;
@@ -29,7 +29,8 @@ class WeatherSwitch extends StatelessWidget {
           inactiveTrackColor: Colors.black87,
           value: isNight,
           onChanged: (value) {
-            WeatherStateWidget.of(context).changeWeatherSwitchValue(value);
+            WeatherSwitchStateWidget.of(context)
+                .changeWeatherSwitchValue(value);
           },
         ),
         BoxedIcon(

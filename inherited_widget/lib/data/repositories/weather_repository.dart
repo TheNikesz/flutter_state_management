@@ -1,10 +1,11 @@
+import 'package:weather_app_inherited_widget/data/data_sources/api.dart';
+
 import '../../domain/models/weather.dart';
-import '../data_sources/api.dart';
 
 class WeatherRepository {
   final OpenMeteoGeocodingApi _geocodingApi;
   final OpenMeteoWeatherForecastApi _weatherForecastApi;
-
+  
   WeatherRepository({
     OpenMeteoGeocodingApi? geocodingApi,
     OpenMeteoWeatherForecastApi? weatherForecastApi,
