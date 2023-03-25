@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_app_triple/presentation/pages/weather_page.dart';
@@ -13,9 +14,12 @@ final getIt = GetIt.instance;
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+
+  late SharedPreferencesStore sharedPreferencesStore;
 
   getIt.registerSingletonAsync<SharedPreferencesStore>(() async {
-    final sharedPreferencesStore = SharedPreferencesStore();
+    sharedPreferencesStore = SharedPreferencesStore();
     await sharedPreferencesStore.getSettingsFromSharedPreferences();
 
     getIt.registerSingleton(
@@ -27,15 +31,15 @@ void main() {
         isFahrenheit: sharedPreferencesStore.state.isFahrenheit,
         isNight: sharedPreferencesStore.state.isNight)));
 
-    getIt.registerSingletonAsync<WeatherStore>(() async {
-      final weatherStore = WeatherStore();
-      await weatherStore
-          .getWeeklyForecast(sharedPreferencesStore.state.favouriteCity);
-      return weatherStore;
-    });
-
     return sharedPreferencesStore;
   });
+
+  getIt.registerSingletonAsync<WeatherStore>(() async {
+    final weatherStore = WeatherStore();
+    await weatherStore
+        .getWeeklyForecast(sharedPreferencesStore.state.favouriteCity);
+    return weatherStore;
+  }, dependsOn: [SharedPreferencesStore]);
 
   runApp(const WeatherApp());
 }
@@ -45,21 +49,22 @@ class WeatherApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Weather App (Triple)',
-      theme: ThemeData(
-        textTheme: GoogleFonts.montserratTextTheme(),
-        scaffoldBackgroundColor: Colors.white,
-        colorScheme: ColorScheme.fromSwatch().copyWith(primary: Colors.black),
-      ),
-      home: FutureBuilder(
-          future: getIt.allReady(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return const WeatherPage();
-            }
-            return const Center(child: CircularProgressIndicator());
-          }),
-    );
+    return FutureBuilder(
+        future: getIt.allReady(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return MaterialApp(
+              title: 'Weather App (Triple)',
+              theme: ThemeData(
+                textTheme: GoogleFonts.montserratTextTheme(),
+                scaffoldBackgroundColor: Colors.white,
+                colorScheme:
+                    ColorScheme.fromSwatch().copyWith(primary: Colors.black),
+              ),
+              home: const WeatherPage(),
+            );
+          }
+          return const Center(child: CircularProgressIndicator());
+        });
   }
 }
