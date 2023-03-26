@@ -129,7 +129,9 @@ class FavouriteCity extends ConsumerWidget {
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                 ),
               );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              }
             },
           )
         ],

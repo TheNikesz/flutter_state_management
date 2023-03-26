@@ -31,12 +31,7 @@ class WeatherApp extends ConsumerWidget {
           Future((() => ref.read(chartSwitchProvider.notifier).state = sharedPreferences.isChart));
           Future((() => ref.read(cityProvider.notifier).state = sharedPreferences.favouriteCity));
 
-          return WeatherPage(
-            isFahrenheitSettings: sharedPreferences.isFahrenheit,
-            isChartSettings: sharedPreferences.isChart,
-            isNightSettings: sharedPreferences.isNight,
-            favouriteCity:  sharedPreferences.favouriteCity,
-          );
+          return const WeatherPage();
         },
         error: (error, __) => null,
         loading: (() => const Center(child: CircularProgressIndicator())),

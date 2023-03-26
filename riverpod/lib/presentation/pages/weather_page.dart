@@ -13,17 +13,8 @@ import '../widgets/weather_chart.dart';
 import '../widgets/weather_switch.dart';
 
 class WeatherPage extends ConsumerWidget {
-  final bool isFahrenheitSettings;
-  final bool isChartSettings;
-  final bool isNightSettings;
-  final String favouriteCity;
-
   const WeatherPage({
     Key? key,
-    required this.isFahrenheitSettings,
-    required this.isChartSettings,
-    required this.isNightSettings,
-    required this.favouriteCity,
   }) : super(key: key);
 
   @override

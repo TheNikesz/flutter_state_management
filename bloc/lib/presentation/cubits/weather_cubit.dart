@@ -10,7 +10,7 @@ part 'weather_state.dart';
 class WeatherCubit extends Cubit<WeatherState> {
   final WeatherRepository weatherRepository;
 
-  WeatherCubit({required this.weatherRepository}) : super(const WeatherInitial());
+  WeatherCubit({required this.weatherRepository, required String favouriteCity}) : super(WeatherInitial(favouriteCity: favouriteCity));
 
   Future<void> getWeeklyForecast(String cityName) async {
     try {
