@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app_triple/constants/app_colors.dart';
-import 'package:weather_app_triple/main.dart';
-import 'package:weather_app_triple/presentation/triple/switch_store.dart';
+import 'package:weather_app_triple/presentation/triple/weather_switch_store.dart';
 import 'package:weather_icons/weather_icons.dart';
+
+import '../../constants/app_colors.dart';
+import '../../main.dart';
 
 class WeatherSwitch extends StatelessWidget {
   final bool isNight;
@@ -29,7 +30,7 @@ class WeatherSwitch extends StatelessWidget {
           inactiveTrackColor: Colors.black87,
           value: isNight,
           onChanged: (value) {
-            getIt<SwitchStore>().changeWeatherSwitchValue(value);
+            getIt<WeatherSwitchStore>().changeWeatherSwitchValue(value);
           },
         ),
         BoxedIcon(

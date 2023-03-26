@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:weather_app_triple/constants/app_colors.dart';
-import 'package:weather_app_triple/domain/models/weather.dart';
+
+import '../../constants/app_colors.dart';
+import '../../domain/models/weather.dart';
 
 class CityAndDate extends StatelessWidget {
   final Weather weather;
@@ -20,10 +21,10 @@ class CityAndDate extends StatelessWidget {
         children: [
           Text(weather.cityName,
               style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 40,
-                color: isNight ? AppColors.nightText : AppColors.dayText,
-              )),
+                  fontWeight: FontWeight.bold, fontSize: 40,
+                  color: isNight ? AppColors.nightText : AppColors.dayText,
+              )
+            ),
           Text(
             DateFormat('EEE dd/MM/yy').format(DateTime.parse(weather.date)),
             style: TextStyle(

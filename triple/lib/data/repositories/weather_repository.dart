@@ -1,5 +1,6 @@
 import 'package:weather_app_triple/data/data_sources/api.dart';
-import 'package:weather_app_triple/domain/models/weather.dart';
+
+import '../../domain/models/weather.dart';
 
 class WeatherRepository {
   final OpenMeteoGeocodingApi _geocodingApi;

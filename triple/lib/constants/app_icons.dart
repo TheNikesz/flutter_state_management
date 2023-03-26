@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weather_icons/weather_icons.dart';
-
-class AppIcons {
+ 
+class AppIcons { 
   static IconData getWeatherIcon(int weatherCode, bool isNight) {
     if (isNight) {
       switch (weatherCode) {

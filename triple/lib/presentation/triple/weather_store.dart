@@ -4,7 +4,7 @@ import 'package:weather_app_triple/data/repositories/weather_repository.dart';
 
 import '../../domain/models/weather.dart';
 
-class WeatherStore extends StreamStore<Exception, List<Weather>> {
+class WeatherStore extends Store<List<Weather>> {
   WeatherStore({WeatherRepository? weatherRepository})
       : _weatherRepository = weatherRepository ?? WeatherRepository(),
         super([]);

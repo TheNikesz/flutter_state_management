@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app_triple/constants/app_colors.dart';
 import 'package:weather_icons/weather_icons.dart';
+
+import '../../constants/app_colors.dart';
 
 class WeatherBlock extends StatelessWidget {
   final String firstLabel;
@@ -51,24 +52,21 @@ class WeatherBlock extends StatelessWidget {
                     Text(
                       firstLabel,
                       style: TextStyle(
-                        color:
-                            isNight ? AppColors.nightText : AppColors.dayText,
+                        color: isNight ? AppColors.nightText : AppColors.dayText,
                       ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        isFirstIconWeather
-                            ? BoxedIcon(
-                                firstIcon,
-                                size: 15,
-                                color: isNight ? Colors.white : Colors.black,
-                              )
-                            : Icon(
-                                firstIcon,
-                                size: 15,
-                                color: isNight ? Colors.white : Colors.black,
-                              ),
+                        isFirstIconWeather ? BoxedIcon(
+                          firstIcon,
+                          size: 15,
+                          color: isNight ? Colors.white : Colors.black,
+                        ) : Icon(
+                          firstIcon,
+                          size: 15,
+                          color: isNight ? Colors.white : Colors.black,
+                        ),
                         SizedBox(
                           width: 70,
                           child: Align(
@@ -76,9 +74,7 @@ class WeatherBlock extends StatelessWidget {
                             child: Text(
                               firstValue,
                               style: TextStyle(
-                                color: isNight
-                                    ? AppColors.nightText
-                                    : AppColors.dayText,
+                                color: isNight ? AppColors.nightText : AppColors.dayText,
                               ),
                             ),
                           ),
@@ -93,24 +89,21 @@ class WeatherBlock extends StatelessWidget {
                     Text(
                       secondLabel,
                       style: TextStyle(
-                        color:
-                            isNight ? AppColors.nightText : AppColors.dayText,
+                        color: isNight ? AppColors.nightText : AppColors.dayText,
                       ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        isSecondIconWeather
-                            ? BoxedIcon(
-                                secondIcon,
-                                size: 15,
-                                color: isNight ? Colors.white : Colors.black,
-                              )
-                            : Icon(
-                                secondIcon,
-                                size: 15,
-                                color: isNight ? Colors.white : Colors.black,
-                              ),
+                        isSecondIconWeather ? BoxedIcon(
+                          secondIcon,
+                          size: 15,
+                          color: isNight ? Colors.white : Colors.black,
+                        ) : Icon(
+                          secondIcon,
+                          size: 15,
+                          color: isNight ? Colors.white : Colors.black,
+                        ),
                         SizedBox(
                           width: 70,
                           child: Align(
@@ -118,9 +111,7 @@ class WeatherBlock extends StatelessWidget {
                             child: Text(
                               secondValue,
                               style: TextStyle(
-                                color: isNight
-                                    ? AppColors.nightText
-                                    : AppColors.dayText,
+                                color: isNight ? AppColors.nightText : AppColors.dayText,
                               ),
                             ),
                           ),
