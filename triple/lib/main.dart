@@ -63,8 +63,9 @@ class WeatherApp extends StatelessWidget {
               ),
               home: const WeatherPage(),
             );
+          } else {
+            return const CircularProgressIndicator();
           }
-          return const Center(child: CircularProgressIndicator());
         });
   }
 }
