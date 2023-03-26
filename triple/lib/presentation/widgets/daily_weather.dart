@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:weather_app_triple/constants/app_colors.dart';
-import 'package:weather_app_triple/constants/app_icons.dart';
-import 'package:weather_app_triple/domain/models/weather.dart';
 import 'package:weather_app_triple/presentation/pages/weather_details_page.dart';
 import 'package:weather_icons/weather_icons.dart';
+
+import '../../constants/app_colors.dart';
+import '../../constants/app_icons.dart';
+import '../../constants/unit_converter.dart';
+import '../../domain/models/weather.dart';
 
 class DailyWeather extends StatelessWidget {
   final Weather weather;
   final bool isNight;
+  final bool isFahrenheit;
 
   const DailyWeather({
     Key? key,
     required this.weather,
     required this.isNight,
+    required this.isFahrenheit,
   }) : super(key: key);
 
   @override
@@ -66,17 +70,18 @@ class DailyWeather extends StatelessWidget {
                     ),
                   ),
                   Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      isNight
-                          ? '${weather.minTemperature.toStringAsFixed(0)}°'
-                          : '${weather.maxTemperature.toStringAsFixed(0)}°',
-                      style: TextStyle(
-                        color:
-                            isNight ? AppColors.nightText : AppColors.dayText,
-                      ),
-                    ),
-                  )
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        isNight
+                            ? UnitConverter.getTemperatureLabel(
+                                weather.minTemperature, isFahrenheit)
+                            : UnitConverter.getTemperatureLabel(
+                                weather.maxTemperature, isFahrenheit),
+                        style: TextStyle(
+                          color:
+                              isNight ? AppColors.nightText : AppColors.dayText,
+                        ),
+                      ))
                 ],
               ),
             ),

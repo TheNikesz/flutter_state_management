@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app_inherited_widget/presentation/state/chart_switch_state_widget.dart';
 
 import '../../constants/app_colors.dart';
-import '../state/weather_state_widget.dart';
 
 class ChartSwitch extends StatelessWidget {
   final bool isNight;
-  final bool isGraph;
+  final bool isChart;
 
   const ChartSwitch({
     Key? key,
     required this.isNight,
-    required this.isGraph,
+    required this.isChart,
   }) : super(key: key);
 
   @override
@@ -28,9 +28,9 @@ class ChartSwitch extends StatelessWidget {
           activeTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
           inactiveThumbColor: isNight ? AppColors.dayDarkGray : Colors.black,
           inactiveTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
-          value: isGraph,
+          value: isChart,
           onChanged: (value) {
-            WeatherStateWidget.of(context).changeGraphSwitchValue(value);
+            ChartSwitchStateWidget.of(context).changeGraphSwitchValue(value);
           },
         ),
         Icon(

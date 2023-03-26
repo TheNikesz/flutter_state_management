@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:weather_app_inherited_widget/presentation/state/weather_state_widget.dart';
 
 import '../../constants/app_colors.dart';
-import '../state/weather_state_widget.dart';
+import '../pages/weather_settings_page.dart';
 
 class CitySearch extends StatelessWidget {
   final TextEditingController _citySearchController;
@@ -16,34 +17,66 @@ class CitySearch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+      padding: const EdgeInsets.symmetric(horizontal: 50.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          InkWell(
+            hoverColor: Colors.transparent,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(10),
+              bottomLeft: Radius.circular(10),
+            ),
+            child: Container(
+              height: 50,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color:
+                    isNight ? AppColors.nightLightGray : AppColors.dayDarkGray,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  bottomLeft: Radius.circular(10),
+                ),
+              ),
+              child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                  child: Icon(
+                    Icons.settings_outlined,
+                    color: isNight ? AppColors.nightText : AppColors.dayText,
+                  )),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WeatherSettingsPage(
+                    isNight: isNight,
+                  ),
+                ),
+              );
+            },
+          ),
           Expanded(
             child: SizedBox(
-              height: 48,
+              height: 50,
               child: TextField(
                 controller: _citySearchController,
                 style: TextStyle(
                   color: isNight ? AppColors.nightText : AppColors.dayText,
                 ),
-                textAlign: TextAlign.left,
+                textAlign: TextAlign.center,
                 cursorColor: isNight ? AppColors.nightText : AppColors.dayText,
                 decoration: InputDecoration(
                   hintText: 'Enter a city name',
                   hintStyle: TextStyle(
+                    height: 3.15,
                     color: isNight ? AppColors.nightText : AppColors.dayText,
                   ),
                   hoverColor: Colors.transparent,
-                  contentPadding:
-                      const EdgeInsets.only(left: 15, top: 15, bottom: 15),
                   fillColor: isNight ? AppColors.nightDarkBlue : Colors.white,
                   filled: true,
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10)),
+                    borderRadius: BorderRadius.zero,
                     borderSide: BorderSide(
                       color: isNight
                           ? AppColors.nightLightGray
@@ -52,9 +85,7 @@ class CitySearch extends StatelessWidget {
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        bottomLeft: Radius.circular(10)),
+                    borderRadius: BorderRadius.zero,
                     borderSide: BorderSide(
                         color: isNight
                             ? AppColors.nightLightGray
@@ -76,7 +107,7 @@ class CitySearch extends StatelessWidget {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 color:
-                    isNight ? AppColors.nightLightGray : AppColors.dayLightGray,
+                    isNight ? AppColors.nightLightGray : AppColors.dayDarkGray,
                 borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(10),
                   bottomRight: Radius.circular(10),
