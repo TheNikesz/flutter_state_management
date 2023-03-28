@@ -1,8 +1,6 @@
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_driver/driver_extension.dart';
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
-import 'package:weather_app_bloc/main.dart' as app;
 
 void main() {
   group('end-to-end test', () {
@@ -10,18 +8,16 @@ void main() {
     late SchedulerBinding schedulerBinding;
 
     setUpAll(() async {
-      enableFlutterDriverExtension();
-
       flutterDriver = await FlutterDriver.connect();
       await flutterDriver.waitUntilFirstFrameRasterized();
-      flutterDriver.startTracing();
+      // flutterDriver.startTracing();
 
-      schedulerBinding = SchedulerBinding.instance;
-      schedulerBinding.addTimingsCallback((timings) {
-        for (final timing in timings) {
-          print('${timing.frameNumber}, ${timing.totalSpan.inMilliseconds};');
-        }
-      });
+      // schedulerBinding = SchedulerBinding.instance;
+      // schedulerBinding.addTimingsCallback((timings) {
+      //   for (final timing in timings) {
+      //     print('${timing.frameNumber}, ${timing.totalSpan.inMilliseconds};');
+      //   }
+      // });
     });
 
     tearDownAll(() async {
