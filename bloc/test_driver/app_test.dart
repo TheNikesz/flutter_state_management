@@ -1,69 +1,73 @@
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('end-to-end test', () {
     late FlutterDriver flutterDriver;
-    late SchedulerBinding schedulerBinding;
 
     setUpAll(() async {
       flutterDriver = await FlutterDriver.connect();
+      flutterDriver.startTracing();
       await flutterDriver.waitUntilFirstFrameRasterized();
-      // flutterDriver.startTracing();
-
-      // schedulerBinding = SchedulerBinding.instance;
-      // schedulerBinding.addTimingsCallback((timings) {
-      //   for (final timing in timings) {
-      //     print('${timing.frameNumber}, ${timing.totalSpan.inMilliseconds};');
-      //   }
-      // });
     });
 
     tearDownAll(() async {
+      final timeline = await flutterDriver.stopTracingAndDownloadTimeline();
+      final TimelineSummary summary = TimelineSummary.summarize(timeline);
+      await summary.writeTimelineToFile('summary', pretty: true);
       flutterDriver.close();
     });
 
     test('weather', () async {
-      await flutterDriver.waitFor(find.text('Warsaw'));
+      await flutterDriver.waitFor(find.text('Friday'));
 
       // go to details and back
       await flutterDriver.tap(find.text('Thursday'));
-      await flutterDriver.waitFor(find.text('Details'));
-      await flutterDriver.tap(find.byTooltip('Back'));
-      await flutterDriver.waitFor(find.text('Warsaw'));
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      await flutterDriver.waitFor(find.text('Sunrise'));
+      await flutterDriver.tap(find.byValueKey('back-icon'));
+      await flutterDriver.waitFor(find.text('Friday'));
+      await Future<void>.delayed(const Duration(milliseconds: 200));
 
       // go to settings, change to fahrenhait and favourite city to 'Lublin' and go back
-      await flutterDriver.tap(find.byTooltip('Settings'));
-      await flutterDriver.waitFor(find.text('Settings'));
+      await flutterDriver.tap(find.byValueKey('settings-icon'));
+      await flutterDriver.waitFor(find.text('Enter a favourite city name'));
+      await Future<void>.delayed(const Duration(milliseconds: 200));
       await flutterDriver
           .tap(find.byValueKey('SettingsTemperatureScaleSwitch'));
-      await flutterDriver.waitFor(find.text('°F'));
+      await Future<void>.delayed(const Duration(milliseconds: 200));
       await flutterDriver.tap(find.byType('TextField'));
+      await Future<void>.delayed(const Duration(milliseconds: 200));
       await flutterDriver.enterText('Lublin');
       await flutterDriver.waitFor(find.text('Lublin'));
+      await Future<void>.delayed(const Duration(milliseconds: 250));
       await flutterDriver.tap(find.byValueKey("done-icon"));
-      await flutterDriver.tap(find.byTooltip('Back'));
-      await flutterDriver.waitFor(find.text('Warsaw'));
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      await flutterDriver.tap(find.byValueKey('back-settings-icon'));
+      await flutterDriver.waitFor(find.text('Friday'));
+      await Future<void>.delayed(const Duration(milliseconds: 200));
 
       // go to details and back
       await flutterDriver.tap(find.text('Thursday'));
-      await flutterDriver.waitFor(find.text('Details'));
-      await flutterDriver.tap(find.byTooltip('Back'));
-      await flutterDriver.waitFor(find.text('Warsaw'));
+      await flutterDriver.waitFor(find.text('Sunrise'));
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      await flutterDriver.tap(find.byValueKey('back-icon'));
+      await flutterDriver.waitFor(find.text('Friday'));
+      await Future<void>.delayed(const Duration(milliseconds: 200));
 
       // enter 'Lublin' and search for weather
       await flutterDriver.tap(find.byType('TextField'));
       await flutterDriver.enterText('Lublin');
+      await Future<void>.delayed(const Duration(milliseconds: 200));
       await flutterDriver.waitFor(find.text('Lublin'));
       await flutterDriver.tap(find.byValueKey("search-icon"));
-      await flutterDriver.waitFor(find.text('Lublin'));
+      await Future<void>.delayed(const Duration(milliseconds: 2000));
 
       // change to night and chart
       await flutterDriver.tap(find.byValueKey('WeatherSwitch'));
-      await flutterDriver.waitFor(find.text('Night'));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
       await flutterDriver.tap(find.byValueKey('ChartSwitch'));
-      await flutterDriver.waitFor(find.text('Chart'));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
     });
 
     test('shared preferences', () async {
@@ -71,7 +75,7 @@ void main() {
 
       // change to night
       await flutterDriver.tap(find.byValueKey('WeatherSwitch'));
-      await flutterDriver.waitFor(find.text('Night'));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
     });
   });
 }

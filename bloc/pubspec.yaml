@@ -34,6 +34,8 @@ dependencies:
   fl_chart: ^0.55.2
   flutter:
     sdk: flutter
+  flutter_driver:
+    sdk: flutter
   flutter_bloc: ^8.1.2
   google_fonts: ^3.0.1
   graphic: ^1.0.0
@@ -46,8 +48,6 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   flutter_test:
-    sdk: flutter
-  flutter_driver:
     sdk: flutter
   test: ^1.22.0
 

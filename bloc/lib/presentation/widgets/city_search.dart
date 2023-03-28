@@ -42,6 +42,7 @@ class CitySearch extends StatelessWidget {
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: Icon(
+                    key: const Key('settings-icon'),
                     Icons.settings_outlined,
                     color: isNight ? AppColors.nightText : AppColors.dayText,
                   )),
