@@ -89,8 +89,7 @@ class CitySearch extends StatelessWidget {
                         color: isNight
                             ? AppColors.nightLightGray
                             : AppColors.dayDarkGray,
-                        width: 2.0
-                    ),
+                        width: 2.0),
                   ),
                 ),
               ),
@@ -116,6 +115,7 @@ class CitySearch extends StatelessWidget {
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: Icon(
+                    key: const Key("search-icon"),
                     Icons.search,
                     color: isNight ? AppColors.nightText : AppColors.dayText,
                   )),

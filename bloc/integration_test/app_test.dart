@@ -1,67 +1,81 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
-
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_driver/driver_extension.dart';
+import 'package:flutter_driver/flutter_driver.dart';
+import 'package:test/test.dart';
 import 'package:weather_app_bloc/main.dart' as app;
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
   group('end-to-end test', () {
-    testWidgets('weather', (tester) async {
-      app.main();
-      await tester.pumpAndSettle();
-      expect(find.text('Warsaw'), findsOneWidget);
+    late FlutterDriver flutterDriver;
+    late SchedulerBinding schedulerBinding;
 
-      // go to details and back
-      await tester.tap(find.text('Thursday'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.arrow_back));
-      await tester.pumpAndSettle();
+    setUpAll(() async {
+      enableFlutterDriverExtension();
 
-      // go to settings, change to fahrenhait and favourite city to 'Lublin' and go back
-      await tester.tap(find.byIcon(Icons.settings_outlined));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('SettingsTemperatureScaleSwitch')));
-      await tester.pumpAndSettle();
-      await tester.enterText(find.byType(TextField), 'Lublin');
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.done));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.arrow_back));
-      await tester.pumpAndSettle();
+      flutterDriver = await FlutterDriver.connect();
+      await flutterDriver.waitUntilFirstFrameRasterized();
+      flutterDriver.startTracing();
 
-      // go to details and back
-      await tester.tap(find.text('Thursday'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.arrow_back));
-      await tester.pumpAndSettle();
-
-      // enter 'Lublin' and search for weather
-      await tester.enterText(find.byType(TextField), 'Lublin');
-      await tester.pumpAndSettle();
-      await tester.tap(find.byIcon(Icons.search));
-      await tester.pumpAndSettle();
-
-      // change to night and chart
-      await tester.tap(find.byKey(const Key('WeatherSwitch')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.byKey(const Key('ChartSwitch')));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Lublin'), findsOneWidget);
+      schedulerBinding = SchedulerBinding.instance;
+      schedulerBinding.addTimingsCallback((timings) {
+        for (final timing in timings) {
+          print('${timing.frameNumber}, ${timing.totalSpan.inMilliseconds};');
+        }
+      });
     });
 
-    testWidgets('shared preferences', (tester) async {
-      app.main();
-      await tester.pumpAndSettle();
-      expect(find.text('Lublin'), findsOneWidget);
+    tearDownAll(() async {
+      flutterDriver.close();
+    });
+
+    test('weather', () async {
+      await flutterDriver.waitFor(find.text('Warsaw'));
+
+      // go to details and back
+      await flutterDriver.tap(find.text('Thursday'));
+      await flutterDriver.waitFor(find.text('Details'));
+      await flutterDriver.tap(find.byTooltip('Back'));
+      await flutterDriver.waitFor(find.text('Warsaw'));
+
+      // go to settings, change to fahrenhait and favourite city to 'Lublin' and go back
+      await flutterDriver.tap(find.byTooltip('Settings'));
+      await flutterDriver.waitFor(find.text('Settings'));
+      await flutterDriver
+          .tap(find.byValueKey('SettingsTemperatureScaleSwitch'));
+      await flutterDriver.waitFor(find.text('°F'));
+      await flutterDriver.tap(find.byType('TextField'));
+      await flutterDriver.enterText('Lublin');
+      await flutterDriver.waitFor(find.text('Lublin'));
+      await flutterDriver.tap(find.byValueKey("done-icon"));
+      await flutterDriver.tap(find.byTooltip('Back'));
+      await flutterDriver.waitFor(find.text('Warsaw'));
+
+      // go to details and back
+      await flutterDriver.tap(find.text('Thursday'));
+      await flutterDriver.waitFor(find.text('Details'));
+      await flutterDriver.tap(find.byTooltip('Back'));
+      await flutterDriver.waitFor(find.text('Warsaw'));
+
+      // enter 'Lublin' and search for weather
+      await flutterDriver.tap(find.byType('TextField'));
+      await flutterDriver.enterText('Lublin');
+      await flutterDriver.waitFor(find.text('Lublin'));
+      await flutterDriver.tap(find.byValueKey("search-icon"));
+      await flutterDriver.waitFor(find.text('Lublin'));
+
+      // change to night and chart
+      await flutterDriver.tap(find.byValueKey('WeatherSwitch'));
+      await flutterDriver.waitFor(find.text('Night'));
+      await flutterDriver.tap(find.byValueKey('ChartSwitch'));
+      await flutterDriver.waitFor(find.text('Chart'));
+    });
+
+    test('shared preferences', () async {
+      await flutterDriver.waitFor(find.text('Lublin'));
 
       // change to night
-      await tester.tap(find.byKey(const Key('WeatherSwitch')));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Lublin'), findsOneWidget);
+      await flutterDriver.tap(find.byValueKey('WeatherSwitch'));
+      await flutterDriver.waitFor(find.text('Night'));
     });
   });
 }
