@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_app_inherited_widget/presentation/inherited_widgets/shared_preferences_inherited_widget.dart';
 import 'package:weather_app_inherited_widget/presentation/state/chart_switch_state_widget.dart';
@@ -11,6 +12,8 @@ import 'package:weather_app_inherited_widget/presentation/state/weather_switch_s
 import 'presentation/pages/weather_page.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   runApp(const SharedPreferencesStateWidget(child: WeatherApp()));
 }
 

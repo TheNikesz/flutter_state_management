@@ -14,6 +14,8 @@ import 'package:weather_app_bloc/presentation/pages/weather_page.dart';
 import 'data/repositories/weather_repository.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   runApp(const WeatherApp());
 }
 
@@ -22,8 +24,6 @@ class WeatherApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-
     return BlocProvider(
       create: (context) =>
           SharedPreferencesCubit()..getSettingsFromSharedPreferences(),

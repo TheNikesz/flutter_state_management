@@ -6,6 +6,8 @@ import 'package:weather_app_bloc/presentation/controllers/providers.dart';
 import 'package:weather_app_bloc/presentation/pages/weather_page.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   runApp(const ProviderScope(child: WeatherApp()));
 }
 
@@ -14,10 +16,8 @@ class WeatherApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-
     final sharedPreferences = ref.watch(sharedPrefenecesProvider);
-    
+
     return MaterialApp(
       title: 'Weather App (Riverpod)',
       theme: ThemeData(
@@ -26,10 +26,19 @@ class WeatherApp extends ConsumerWidget {
       ),
       home: sharedPreferences.when(
         data: (sharedPreferences) {
-          Future((() => ref.read(settingsProvider.notifier).state = ref.read(settingsProvider.notifier).state.copyWith(isFahrenheit: sharedPreferences.isFahrenheit, isNight: sharedPreferences.isNight, isChart: sharedPreferences.isChart)));
-          Future((() => ref.read(weatherSwitchProvider.notifier).state = sharedPreferences.isNight));
-          Future((() => ref.read(chartSwitchProvider.notifier).state = sharedPreferences.isChart));
-          Future((() => ref.read(cityProvider.notifier).state = sharedPreferences.favouriteCity));
+          Future((() => ref.read(settingsProvider.notifier).state = ref
+              .read(settingsProvider.notifier)
+              .state
+              .copyWith(
+                  isFahrenheit: sharedPreferences.isFahrenheit,
+                  isNight: sharedPreferences.isNight,
+                  isChart: sharedPreferences.isChart)));
+          Future((() => ref.read(weatherSwitchProvider.notifier).state =
+              sharedPreferences.isNight));
+          Future((() => ref.read(chartSwitchProvider.notifier).state =
+              sharedPreferences.isChart));
+          Future((() => ref.read(cityProvider.notifier).state =
+              sharedPreferences.favouriteCity));
 
           return const WeatherPage();
         },
