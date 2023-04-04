@@ -6,10 +6,10 @@ void main() {
   late SchedulerBinding schedulerBinding;
   enableFlutterDriverExtension();
   app.main();
-  schedulerBinding = SchedulerBinding.instance;
-  schedulerBinding.addTimingsCallback((timings) {
-    for (final timing in timings) {
-      print('${timing.frameNumber}, ${timing.totalSpan.inMicroseconds};');
-    }
-  });
+  // schedulerBinding = SchedulerBinding.instance;
+  // schedulerBinding.addTimingsCallback((timings) {
+  //   for (final timing in timings) {
+  //     print('${timing.frameNumber}, ${timing.totalSpan.inMicroseconds};');
+  //   }
+  // });
 }
