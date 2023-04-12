@@ -19,4 +19,8 @@ done
 
 echo $pid
 
-top -b -n 50 -d 0.2 -p $pid | grep $pid | awk '{print $11","$9","$10";"}'  >> cpu_usage_$day.csv
+for i in {1..100}
+do
+   sudo pmap $pid | tail -n 1 | awk '{print $2";"}'  >> mem_usage_$day.csv
+   sleep 0.2
+done
