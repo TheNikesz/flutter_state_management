@@ -1,5 +1,11 @@
 #!/bin/bash
 
+flutter drive --target=test_driver/app.dart --profile
+# save output of afforementioned command to variable
+pid=$(flutter drive --target=test_driver/app.dart --profile | grep "pid" | awk '{print $2}')
+echo $pid
+
+
 # read date and from system
 day=$(date +%Y%m%d%H%M%S)
 # for loop to get cpu usage of linux process every 100 miliseconds
