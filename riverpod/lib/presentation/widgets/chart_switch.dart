@@ -24,14 +24,16 @@ class ChartSwitch extends ConsumerWidget {
           color: isNight ? Colors.white : Colors.black,
         ),
         Switch(
-          hoverColor: Colors.transparent,
-          activeColor: isNight ? AppColors.dayDarkGray : Colors.black,
-          activeTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
-          inactiveThumbColor: isNight ? AppColors.dayDarkGray : Colors.black,
-          inactiveTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
-          value: isChart,
-          onChanged: (value) => ref.read(chartSwitchProvider.notifier).state = value
-        ),
+            key: const Key('ChartSwitch'),
+            hoverColor: Colors.transparent,
+            activeColor: isNight ? AppColors.dayDarkGray : Colors.black,
+            activeTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
+            inactiveThumbColor: isNight ? AppColors.dayDarkGray : Colors.black,
+            inactiveTrackColor:
+                isNight ? AppColors.dayLightGray : Colors.black87,
+            value: isChart,
+            onChanged: (value) =>
+                ref.read(chartSwitchProvider.notifier).state = value),
         Icon(
           Icons.show_chart,
           color: isNight ? Colors.white : Colors.black,

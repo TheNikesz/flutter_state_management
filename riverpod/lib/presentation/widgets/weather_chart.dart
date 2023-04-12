@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 import 'package:intl/intl.dart';
-import 'package:weather_app_bloc/constants/unit_converter.dart';
+import 'package:weather_app_riverpod/constants/unit_converter.dart';
 
 import '../../constants/app_colors.dart';
 import '../../domain/models/weather.dart';

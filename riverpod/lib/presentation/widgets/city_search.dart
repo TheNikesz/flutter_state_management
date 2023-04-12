@@ -42,6 +42,7 @@ class CitySearch extends ConsumerWidget {
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: Icon(
+                    key: const Key('settings-icon'),
                     Icons.settings_outlined,
                     color: isNight ? AppColors.nightText : AppColors.dayText,
                   )),
@@ -89,8 +90,7 @@ class CitySearch extends ConsumerWidget {
                         color: isNight
                             ? AppColors.nightLightGray
                             : AppColors.dayDarkGray,
-                        width: 2.0
-                    ),
+                        width: 2.0),
                   ),
                 ),
               ),
@@ -116,12 +116,14 @@ class CitySearch extends ConsumerWidget {
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: Icon(
+                    key: const Key("search-icon"),
                     Icons.search,
                     color: isNight ? AppColors.nightText : AppColors.dayText,
                   )),
             ),
             onTap: () {
-              ref.read(cityProvider.notifier).state = _citySearchController.text;
+              ref.read(cityProvider.notifier).state =
+                  _citySearchController.text;
             },
           )
         ],

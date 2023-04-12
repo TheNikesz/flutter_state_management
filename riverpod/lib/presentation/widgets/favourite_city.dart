@@ -41,6 +41,7 @@ class FavouriteCity extends ConsumerWidget {
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: Icon(
+                    key: const Key('back-settings-icon'),
                     Icons.arrow_back,
                     color: isNight ? AppColors.nightText : AppColors.dayText,
                   )),
@@ -109,24 +110,31 @@ class FavouriteCity extends ConsumerWidget {
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: Icon(
+                    key: const Key("done-icon"),
                     Icons.done,
                     color: isNight ? AppColors.nightText : AppColors.dayText,
                   )),
             ),
             onTap: () async {
-              SharedPreferences sharedPrefrences = await SharedPreferences.getInstance();
-              sharedPrefrences.setString('favouriteCity', _favouriteCityController.text);
-              
+              SharedPreferences sharedPrefrences =
+                  await SharedPreferences.getInstance();
+              sharedPrefrences.setString(
+                  'favouriteCity', _favouriteCityController.text);
+
               final snackBar = SnackBar(
-                content: Text('Favourite city was changed to: ${_favouriteCityController.text}',
+                content: Text(
+                  'Favourite city was changed to: ${_favouriteCityController.text}',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: isNight ? AppColors.nightText : AppColors.dayText,
                   ),
                 ),
-                backgroundColor: isNight ? AppColors.nightLightBlue : AppColors.dayLightGray,
+                backgroundColor:
+                    isNight ? AppColors.nightLightBlue : AppColors.dayLightGray,
                 shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)),
                 ),
               );
               if (context.mounted) {

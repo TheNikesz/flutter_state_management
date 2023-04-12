@@ -18,6 +18,7 @@ class WeatherDetailsBackButton extends StatelessWidget {
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           icon: Icon(
+            key: const Key('back-icon'),
             Icons.arrow_back,
             color: isNight ? AppColors.nightText : AppColors.dayText,
             size: 30,

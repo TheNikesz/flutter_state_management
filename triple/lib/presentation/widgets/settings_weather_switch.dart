@@ -39,6 +39,7 @@ class SettingsWeatherSwitch extends StatelessWidget {
                   color: isNight ? Colors.white : Colors.black,
                 ),
                 Switch(
+                  key: const Key('SettingsWeatherSwitch'),
                   hoverColor: Colors.transparent,
                   activeColor: isNight ? AppColors.dayDarkGray : Colors.black,
                   activeTrackColor:

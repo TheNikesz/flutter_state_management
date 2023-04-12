@@ -38,6 +38,7 @@ class SettingsChartSwitch extends StatelessWidget {
                   color: isNight ? Colors.white : Colors.black,
                 ),
                 Switch(
+                  key: const Key('SettingsChartSwitch'),
                   hoverColor: Colors.transparent,
                   activeColor: isNight ? AppColors.dayDarkGray : Colors.black,
                   activeTrackColor:

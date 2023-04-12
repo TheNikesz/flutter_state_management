@@ -42,17 +42,25 @@ class SettingsTemperatureScaleSwitch extends ConsumerWidget {
                   ),
                 ),
                 Switch(
+                  key: const Key('SettingsTemperatureScaleSwitch'),
                   hoverColor: Colors.transparent,
                   activeColor: isNight ? AppColors.dayDarkGray : Colors.black,
-                  activeTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
-                  inactiveThumbColor: isNight ? AppColors.dayDarkGray : Colors.black,
-                  inactiveTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
+                  activeTrackColor:
+                      isNight ? AppColors.dayLightGray : Colors.black87,
+                  inactiveThumbColor:
+                      isNight ? AppColors.dayDarkGray : Colors.black,
+                  inactiveTrackColor:
+                      isNight ? AppColors.dayLightGray : Colors.black87,
                   value: isFahrenheit,
                   onChanged: (value) async {
-                    SharedPreferences sharedPrefrences = await SharedPreferences.getInstance();
+                    SharedPreferences sharedPrefrences =
+                        await SharedPreferences.getInstance();
                     sharedPrefrences.setBool('isFahrenheit', value);
-                    
-                    ref.read(settingsProvider.notifier).state = ref.read(settingsProvider.notifier).state.copyWith(isFahrenheit: value);
+
+                    ref.read(settingsProvider.notifier).state = ref
+                        .read(settingsProvider.notifier)
+                        .state
+                        .copyWith(isFahrenheit: value);
                   },
                 ),
                 Text(

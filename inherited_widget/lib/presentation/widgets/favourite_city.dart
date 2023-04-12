@@ -40,6 +40,7 @@ class FavouriteCity extends StatelessWidget {
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: Icon(
+                    key: const Key('back-settings-icon'),
                     Icons.arrow_back,
                     color: isNight ? AppColors.nightText : AppColors.dayText,
                   )),
@@ -108,6 +109,7 @@ class FavouriteCity extends StatelessWidget {
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: Icon(
+                    key: const Key("done-icon"),
                     Icons.done,
                     color: isNight ? AppColors.nightText : AppColors.dayText,
                   )),

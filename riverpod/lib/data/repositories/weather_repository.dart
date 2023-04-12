@@ -1,4 +1,4 @@
-import 'package:weather_app_bloc/data/data_sources/api.dart';
+import 'package:weather_app_riverpod/data/data_sources/api.dart';
 
 import '../../domain/models/weather.dart';
 

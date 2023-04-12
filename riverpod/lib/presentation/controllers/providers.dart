@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:weather_app_bloc/presentation/controllers/states/shared_preferences_state.dart';
+import 'package:weather_app_riverpod/presentation/controllers/states/shared_preferences_state.dart';
 
 import '../../data/repositories/weather_repository.dart';
 import '../../domain/models/weather.dart';

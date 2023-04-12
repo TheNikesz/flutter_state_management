@@ -14,7 +14,8 @@ void main() {
     tearDownAll(() async {
       final timeline = await flutterDriver.stopTracingAndDownloadTimeline();
       final TimelineSummary summary = TimelineSummary.summarize(timeline);
-      await summary.writeTimelineToFile('summary', pretty: true);
+      await summary.writeTimelineToFile(DateTime.now().toIso8601String(),
+          pretty: true);
       flutterDriver.close();
     });
 

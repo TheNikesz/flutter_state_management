@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:weather_app_bloc/presentation/pages/weather_details_page.dart';
+import 'package:weather_app_riverpod/presentation/pages/weather_details_page.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 import '../../constants/app_colors.dart';

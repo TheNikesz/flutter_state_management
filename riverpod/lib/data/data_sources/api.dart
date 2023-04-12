@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:weather_app_bloc/domain/models/location.dart';
-import 'package:weather_app_bloc/domain/models/weather.dart';
+import 'package:weather_app_riverpod/domain/models/location.dart';
+import 'package:weather_app_riverpod/domain/models/weather.dart';
 
 class GeocodingException implements Exception {}
 

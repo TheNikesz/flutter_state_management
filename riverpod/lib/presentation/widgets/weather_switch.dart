@@ -23,14 +23,15 @@ class WeatherSwitch extends ConsumerWidget {
           color: isNight ? Colors.white : Colors.black,
         ),
         Switch(
-          hoverColor: Colors.transparent,
-          activeColor: AppColors.dayDarkGray,
-          activeTrackColor: AppColors.dayLightGray,
-          inactiveThumbColor: Colors.black,
-          inactiveTrackColor: Colors.black87,
-          value: isNight,
-          onChanged: (value) => ref.read(weatherSwitchProvider.notifier).state = value
-        ),
+            key: const Key('WeatherSwitch'),
+            hoverColor: Colors.transparent,
+            activeColor: AppColors.dayDarkGray,
+            activeTrackColor: AppColors.dayLightGray,
+            inactiveThumbColor: Colors.black,
+            inactiveTrackColor: Colors.black87,
+            value: isNight,
+            onChanged: (value) =>
+                ref.read(weatherSwitchProvider.notifier).state = value),
         BoxedIcon(
           WeatherIcons.night_clear,
           color: isNight ? Colors.white : Colors.black,

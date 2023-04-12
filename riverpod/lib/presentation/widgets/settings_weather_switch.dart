@@ -9,7 +9,8 @@ import '../controllers/providers.dart';
 class SettingsWeatherSwitch extends ConsumerWidget {
   const SettingsWeatherSwitch({
     Key? key,
-    required this.isNight, required this.isNightSettings,
+    required this.isNight,
+    required this.isNightSettings,
   }) : super(key: key);
 
   final bool isNight;
@@ -39,17 +40,25 @@ class SettingsWeatherSwitch extends ConsumerWidget {
                   color: isNight ? Colors.white : Colors.black,
                 ),
                 Switch(
+                  key: const Key('SettingsWeatherSwitch'),
                   hoverColor: Colors.transparent,
                   activeColor: isNight ? AppColors.dayDarkGray : Colors.black,
-                  activeTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
-                  inactiveThumbColor: isNight ? AppColors.dayDarkGray : Colors.black,
-                  inactiveTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
+                  activeTrackColor:
+                      isNight ? AppColors.dayLightGray : Colors.black87,
+                  inactiveThumbColor:
+                      isNight ? AppColors.dayDarkGray : Colors.black,
+                  inactiveTrackColor:
+                      isNight ? AppColors.dayLightGray : Colors.black87,
                   value: isNightSettings,
                   onChanged: (value) async {
-                    SharedPreferences sharedPrefrences = await SharedPreferences.getInstance();
+                    SharedPreferences sharedPrefrences =
+                        await SharedPreferences.getInstance();
                     sharedPrefrences.setBool('isNight', value);
-                    
-                    ref.read(settingsProvider.notifier).state = ref.read(settingsProvider.notifier).state.copyWith(isNight: value);
+
+                    ref.read(settingsProvider.notifier).state = ref
+                        .read(settingsProvider.notifier)
+                        .state
+                        .copyWith(isNight: value);
                   },
                 ),
                 BoxedIcon(

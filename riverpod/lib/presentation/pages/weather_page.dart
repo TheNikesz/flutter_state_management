@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:weather_app_bloc/data/data_sources/api.dart';
+import 'package:weather_app_riverpod/data/data_sources/api.dart';
 
 import '../../constants/app_colors.dart';
 import '../controllers/providers.dart';

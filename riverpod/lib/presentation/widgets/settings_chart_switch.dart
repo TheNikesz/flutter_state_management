@@ -39,17 +39,25 @@ class SettingsChartSwitch extends ConsumerWidget {
                   color: isNight ? Colors.white : Colors.black,
                 ),
                 Switch(
+                  key: const Key('SettingsChartSwitch'),
                   hoverColor: Colors.transparent,
                   activeColor: isNight ? AppColors.dayDarkGray : Colors.black,
-                  activeTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
-                  inactiveThumbColor: isNight ? AppColors.dayDarkGray : Colors.black,
-                  inactiveTrackColor: isNight ? AppColors.dayLightGray : Colors.black87,
+                  activeTrackColor:
+                      isNight ? AppColors.dayLightGray : Colors.black87,
+                  inactiveThumbColor:
+                      isNight ? AppColors.dayDarkGray : Colors.black,
+                  inactiveTrackColor:
+                      isNight ? AppColors.dayLightGray : Colors.black87,
                   value: isChart,
                   onChanged: (value) async {
-                    SharedPreferences sharedPrefrences = await SharedPreferences.getInstance();
+                    SharedPreferences sharedPrefrences =
+                        await SharedPreferences.getInstance();
                     sharedPrefrences.setBool('isChart', value);
-                    
-                    ref.read(settingsProvider.notifier).state = ref.read(settingsProvider.notifier).state.copyWith(isChart: value);
+
+                    ref.read(settingsProvider.notifier).state = ref
+                        .read(settingsProvider.notifier)
+                        .state
+                        .copyWith(isChart: value);
                   },
                 ),
                 Icon(

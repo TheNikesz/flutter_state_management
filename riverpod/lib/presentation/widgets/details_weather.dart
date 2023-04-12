@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weather_app_bloc/domain/models/weather.dart';
+import 'package:weather_app_riverpod/domain/models/weather.dart';
 
 import '../../constants/app_colors.dart';
 import '../../constants/unit_converter.dart';

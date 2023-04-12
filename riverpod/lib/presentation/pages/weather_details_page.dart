@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:weather_app_bloc/presentation/widgets/details_weather.dart';
-import 'package:weather_app_bloc/presentation/widgets/weather_block.dart';
+import 'package:weather_app_riverpod/presentation/widgets/details_weather.dart';
+import 'package:weather_app_riverpod/presentation/widgets/weather_block.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 import '../../constants/app_colors.dart';
