@@ -3,15 +3,14 @@ import 'package:weather_app_inherited_widget/data/data_sources/api.dart';
 import '../../domain/models/weather.dart';
 
 class WeatherRepository {
-  final OpenMeteoGeocodingApi _geocodingApi;
-  final OpenMeteoWeatherForecastApi _weatherForecastApi;
-  
+  final GeocodingApi _geocodingApi;
+  final WeatherForecastApi _weatherForecastApi;
+
   WeatherRepository({
-    OpenMeteoGeocodingApi? geocodingApi,
-    OpenMeteoWeatherForecastApi? weatherForecastApi,
-  })  : _geocodingApi = geocodingApi ?? OpenMeteoGeocodingApi(),
-        _weatherForecastApi =
-            weatherForecastApi ?? OpenMeteoWeatherForecastApi();
+    GeocodingApi? geocodingApi,
+    WeatherForecastApi? weatherForecastApi,
+  })  : _geocodingApi = geocodingApi ?? GeocodingApiMock(),
+        _weatherForecastApi = weatherForecastApi ?? WeatherForecastApiMock();
 
   Future<List<Weather>> getWeeklyForecast(String cityName) async {
     try {

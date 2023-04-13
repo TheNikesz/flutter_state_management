@@ -27,6 +27,7 @@ class WeatherApp extends StatelessWidget {
 
     if (!sharedPreferencesContext.isLoading) {
       return WeatherStateWidget(
+        
         favouriteCity: sharedPreferencesContext.favouriteCity,
         child: SettingsStateWidget(
           isFarenheit: sharedPreferencesContext.isFahrenheit,
