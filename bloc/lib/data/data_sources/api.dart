@@ -15,7 +15,8 @@ class OpenMeteoGeocodingApi implements GeocodingApi {
 
   @override
   Future<Location> getCityLocation(String cityName) async {
-    var response = await Dio().get(_baseUrl, queryParameters: {'name' : cityName, 'count' : 1});
+    var response = await Dio()
+        .get(_baseUral, queryParameters: {'name': cityName, 'count': 1});
 
     if (response.data['results'] == null) {
       throw GeocodingException();

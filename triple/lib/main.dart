@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:weather_app_triple/data/data_sources/api.dart';
+import 'package:weather_app_triple/data/repositories/weather_repository.dart';
 import 'package:weather_app_triple/presentation/pages/weather_page.dart';
 import 'package:weather_app_triple/presentation/triple/chart_switch_store.dart';
 import 'package:weather_app_triple/presentation/triple/settings_state.dart';
@@ -35,7 +37,10 @@ void main() {
   });
 
   getIt.registerSingletonAsync<WeatherStore>(() async {
-    final weatherStore = WeatherStore();
+    final weatherStore = WeatherStore(
+        weatherRepository: WeatherRepository(
+            geocodingApi: GeocodingApiMock(),
+            weatherForecastApi: WeatherForecastApiMock()));
     await weatherStore
         .getWeeklyForecast(sharedPreferencesStore.state.favouriteCity);
     return weatherStore;
