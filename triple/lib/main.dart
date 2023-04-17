@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -17,7 +19,7 @@ final getIt = GetIt.instance;
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-
+  print("pid: $pid");
   late SharedPreferencesStore sharedPreferencesStore;
 
   getIt.registerSingletonAsync<SharedPreferencesStore>(() async {

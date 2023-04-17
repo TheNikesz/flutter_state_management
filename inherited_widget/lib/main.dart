@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,6 +16,7 @@ import 'presentation/pages/weather_page.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  print("pid: $pid");
   runApp(const SharedPreferencesStateWidget(child: WeatherApp()));
 }
 
@@ -27,7 +30,6 @@ class WeatherApp extends StatelessWidget {
 
     if (!sharedPreferencesContext.isLoading) {
       return WeatherStateWidget(
-        
         favouriteCity: sharedPreferencesContext.favouriteCity,
         child: SettingsStateWidget(
           isFarenheit: sharedPreferencesContext.isFahrenheit,

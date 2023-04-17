@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
@@ -20,7 +22,9 @@ void main() {
     });
 
     test('weather', () async {
+      print("pid: $pid");
       await flutterDriver.waitFor(find.text('Friday'));
+      await Future<void>.delayed(const Duration(milliseconds: 200));
 
       // go to details and back
       await flutterDriver.tap(find.text('Thursday'));
