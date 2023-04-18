@@ -56,23 +56,14 @@ class WeatherApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: getIt.allReady(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return MaterialApp(
-              title: 'Weather App (Triple)',
-              theme: ThemeData(
-                textTheme: GoogleFonts.montserratTextTheme(),
-                scaffoldBackgroundColor: Colors.white,
-                colorScheme:
-                    ColorScheme.fromSwatch().copyWith(primary: Colors.black),
-              ),
-              home: const WeatherPage(),
-            );
-          } else {
-            return const CircularProgressIndicator();
-          }
-        });
+    return MaterialApp(
+      title: 'Weather App (Triple)',
+      theme: ThemeData(
+        textTheme: GoogleFonts.montserratTextTheme(),
+        scaffoldBackgroundColor: Colors.white,
+        colorScheme: ColorScheme.fromSwatch().copyWith(primary: Colors.black),
+      ),
+      home: const WeatherPage(),
+    );
   }
 }

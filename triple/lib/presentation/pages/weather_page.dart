@@ -26,81 +26,98 @@ class WeatherPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chartSwitchStore = getIt<ChartSwitchStore>();
+    return FutureBuilder(
+      future: getIt.allReady(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final chartSwitchStore = getIt<ChartSwitchStore>();
 
-    return ScopedBuilder<WeatherSwitchStore, bool>(
-      store: getIt<WeatherSwitchStore>(),
-      onState: (context, weatherSwitchState) => Scaffold(
-        backgroundColor:
-            weatherSwitchState == true ? AppColors.nightDarkBlue : Colors.white,
-        resizeToAvoidBottomInset: false,
-        body: ScopedBuilder<WeatherStore, List<Weather>>(
-          store: getIt<WeatherStore>(),
-          onError: (context, error) => Column(
-            children: [
-              const Spacer(),
-              _buildError(error, weatherSwitchState),
-              const Spacer(),
-            ],
-          ),
-          onLoading: (context) => _buildLoading(weatherSwitchState),
-          onState: (context, weatherState) =>
-              ScopedBuilder<SettingsStore, SettingsState>(
-            store: getIt<SettingsStore>(),
-            onState: (context, settingsState) => Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Spacer(),
-                CitySearch(isNight: weatherSwitchState),
-                const Spacer(),
-                CityAndDate(
-                    weather: weatherState.first, isNight: weatherSwitchState),
-                const Spacer(),
-                MainWeather(
-                  weather: weatherState.first,
-                  isNight: weatherSwitchState,
-                  isFahrenheit: settingsState.isFahrenheit,
+          return ScopedBuilder<WeatherSwitchStore, bool>(
+            store: getIt<WeatherSwitchStore>(),
+            onState: (context, weatherSwitchState) => Scaffold(
+              backgroundColor: weatherSwitchState == true
+                  ? AppColors.nightDarkBlue
+                  : Colors.white,
+              resizeToAvoidBottomInset: false,
+              body: ScopedBuilder<WeatherStore, List<Weather>>(
+                store: getIt<WeatherStore>(),
+                onError: (context, error) => Column(
+                  children: [
+                    const Spacer(),
+                    _buildError(error, weatherSwitchState),
+                    const Spacer(),
+                  ],
                 ),
-                const Spacer(),
-                ScopedBuilder<ChartSwitchStore, bool>(
-                  store: chartSwitchStore,
-                  onState: (context, chartSwitchState) {
-                    return _buildSwitches(chartSwitchState, weatherSwitchState);
-                  },
+                onLoading: (context) => _buildLoading(weatherSwitchState),
+                onState: (context, weatherState) =>
+                    ScopedBuilder<SettingsStore, SettingsState>(
+                  store: getIt<SettingsStore>(),
+                  onState: (context, settingsState) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Spacer(),
+                      CitySearch(isNight: weatherSwitchState),
+                      const Spacer(),
+                      CityAndDate(
+                          weather: weatherState.first,
+                          isNight: weatherSwitchState),
+                      const Spacer(),
+                      MainWeather(
+                        weather: weatherState.first,
+                        isNight: weatherSwitchState,
+                        isFahrenheit: settingsState.isFahrenheit,
+                      ),
+                      const Spacer(),
+                      ScopedBuilder<ChartSwitchStore, bool>(
+                        store: chartSwitchStore,
+                        onState: (context, chartSwitchState) {
+                          return _buildSwitches(
+                              chartSwitchState, weatherSwitchState);
+                        },
+                      ),
+                      const Spacer(),
+                      ScopedBuilder<ChartSwitchStore, bool>(
+                          store: chartSwitchStore,
+                          onState: (context, chartSwitchState) {
+                            if (chartSwitchState == true) {
+                              return WeatherChart(
+                                weeklyWeather: weatherState,
+                                isNight: weatherSwitchState,
+                                isFahrenheit: settingsState.isFahrenheit,
+                              );
+                            } else {
+                              return SizedBox(
+                                height: 410,
+                                child: ListView.builder(
+                                  itemCount: weatherState.skip(1).length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return DailyWeather(
+                                        weather: weatherState
+                                            .skip(1)
+                                            .elementAt(index),
+                                        isNight: weatherSwitchState,
+                                        isFahrenheit:
+                                            settingsState.isFahrenheit);
+                                  },
+                                ),
+                              );
+                            }
+                          }),
+                      const Spacer(),
+                    ],
+                  ),
                 ),
-                const Spacer(),
-                ScopedBuilder<ChartSwitchStore, bool>(
-                    store: chartSwitchStore,
-                    onState: (context, chartSwitchState) {
-                      if (chartSwitchState == true) {
-                        return WeatherChart(
-                          weeklyWeather: weatherState,
-                          isNight: weatherSwitchState,
-                          isFahrenheit: settingsState.isFahrenheit,
-                        );
-                      } else {
-                        return SizedBox(
-                          height: 410,
-                          child: ListView.builder(
-                            itemCount: weatherState.skip(1).length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return DailyWeather(
-                                  weather:
-                                      weatherState.skip(1).elementAt(index),
-                                  isNight: weatherSwitchState,
-                                  isFahrenheit: settingsState.isFahrenheit);
-                            },
-                          ),
-                        );
-                      }
-                    }),
-                const Spacer(),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
     );
   }
 
