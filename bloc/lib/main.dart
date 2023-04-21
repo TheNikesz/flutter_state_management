@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -20,6 +21,11 @@ void main() {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   print("pid: $pid");
   runApp(const WeatherApp());
+  // //execute code every 1s
+  // Timer.periodic(const Duration(seconds: 1), (timer) {
+  //   //print ram usage
+  //   print("ram: ${ProcessInfo.currentRss / 1024 / 1024} MB");
+  // });
 }
 
 class WeatherApp extends StatelessWidget {
