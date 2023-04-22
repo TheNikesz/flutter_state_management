@@ -19,13 +19,13 @@ import 'data/repositories/weather_repository.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-  print("pid: $pid");
-  runApp(const WeatherApp());
+  // print("pid: $pid");
   // //execute code every 1s
-  // Timer.periodic(const Duration(seconds: 1), (timer) {
+  // Timer.periodic(const Duration(milliseconds: 250), (timer) {
   //   //print ram usage
   //   print("ram: ${ProcessInfo.currentRss / 1024 / 1024} MB");
   // });
+  runApp(const WeatherApp());
 }
 
 class WeatherApp extends StatelessWidget {

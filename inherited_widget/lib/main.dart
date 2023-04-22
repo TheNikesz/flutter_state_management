@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -16,7 +17,12 @@ import 'presentation/pages/weather_page.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-  print("pid: $pid");
+  // print("pid: $pid");
+  // //execute code every 1s
+  // Timer.periodic(const Duration(milliseconds: 250), (timer) {
+  //   //print ram usage
+  //   print("ram: ${ProcessInfo.currentRss / 1024 / 1024} MB");
+  // });
   runApp(const SharedPreferencesStateWidget(child: WeatherApp()));
 }
 

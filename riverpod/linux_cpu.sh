@@ -4,7 +4,7 @@ for i in {1..20}
 do
   # echo run number in green color
   echo -e "\033[32m run number $i \033[0m"
-  flutter drive --target=test_driver/app.dart --profile -d linux > ./build/pid.txt &
+  flutter drive --target=test_driver/app.dart --profile -d linux > pid.txt &
   sleep 2
 
   # read date and from system
@@ -17,13 +17,13 @@ do
   while [ -z "$pid" ]
   do
     # read pid from pid.txt
-    pid=$(cat ./build/pid.txt | grep "pid" | awk '{print $2}')
+    pid=$(cat pid.txt | grep "pid" | awk '{print $2}')
     sleep 0.5
   done
 
   echo $pid
 
-  top -b -n 75 -d 0.2 -p $pid | grep $pid | awk '{print $9";"}'  >> ./build/cpu__$day.csv
+  top -b -n 55 -d 0.2 -p $pid | grep $pid | awk '{print $9";"}'  >> ./build/cpu__$day.csv
 
   kill $pid
   unset pid

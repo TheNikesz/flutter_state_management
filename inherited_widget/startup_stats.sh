@@ -1,5 +1,5 @@
 # execute commands 10 times
-for i in {1..10}
+for i in {11..20}
 do
     # echo in green color
     echo -e "\033[32m start flutter application $i time \033[0m"
