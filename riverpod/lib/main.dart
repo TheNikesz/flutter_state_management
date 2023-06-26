@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:weather_app_bloc/presentation/controllers/providers.dart';
-import 'package:weather_app_bloc/presentation/pages/weather_page.dart';
+
+import 'presentation/controllers/providers.dart';
+import 'presentation/pages/weather_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

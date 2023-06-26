@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:weather_app_bloc/presentation/widgets/details_weather.dart';
-import 'package:weather_app_bloc/presentation/widgets/weather_block.dart';
 import 'package:weather_icons/weather_icons.dart';
 
 import '../../constants/app_colors.dart';
@@ -11,6 +9,8 @@ import '../../constants/unit_converter.dart';
 import '../../domain/models/weather.dart';
 import '../controllers/providers.dart';
 import '../widgets/city_and_date.dart';
+import '../widgets/details_weather.dart';
+import '../widgets/weather_block.dart';
 import '../widgets/weather_details_back_button.dart';
 
 class WeatherDetailsPage extends ConsumerWidget {

@@ -108,60 +108,65 @@ class WeatherPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(
-            height: 150,
-            child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: isNight
-                      ? AppColors.nightLightBlue
-                      : AppColors.dayLightGray,
-                  borderRadius: const BorderRadius.all(Radius.circular(10)),
-                ),
-                child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 20,
-                      right: 20,
-                    ),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 20.0, bottom: 5.0, left: 10.0, right: 10.0),
-                          child: Icon(
-                            Icons.fmd_bad_outlined,
-                            size: 50.0,
-                            color: isNight
-                                ? AppColors.nightText
-                                : AppColors.dayText,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 10.0, bottom: 2.0, left: 40.0, right: 40.0),
-                          child: Text(
-                            errorMessage,
-                            style: TextStyle(
-                              fontSize: 15,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 48.0),
+          child: SizedBox(
+              height: 180,
+              child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: isNight
+                        ? AppColors.nightLightBlue
+                        : AppColors.dayLightGray,
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                  ),
+                  child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: 20,
+                        right: 20,
+                      ),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 20.0, bottom: 5.0, left: 10.0, right: 10.0),
+                            child: Icon(
+                              Icons.fmd_bad_outlined,
+                              size: 50.0,
                               color: isNight
                                   ? AppColors.nightText
                                   : AppColors.dayText,
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                          child: Text(
-                            'Please enter a new city name and try again.',
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: isNight
-                                  ? AppColors.nightText
-                                  : AppColors.dayText,
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 10.0, bottom: 2.0, left: 40.0, right: 40.0),
+                            child: Text(
+                              errorMessage,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: isNight
+                                    ? AppColors.nightText
+                                    : AppColors.dayText,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    )))),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                            child: Text(
+                              'Please enter a new city name and try again.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: isNight
+                                    ? AppColors.nightText
+                                    : AppColors.dayText,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )))),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 12.0),
           child: CitySearch(isNight: isNight),

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:weather_app_bloc/domain/models/location.dart';
-import 'package:weather_app_bloc/domain/models/weather.dart';
+
+import '../../domain/models/location.dart';
+import '../../domain/models/weather.dart';
 
 class GeocodingException implements Exception {}
 
